@@ -15,7 +15,7 @@ App administrador de tareas que muestra su evolución a través de distintas ver
 ## Instalación
 
 ```bash
-git clone https://github.com/usuario/todolist-evolution.git
+git clone https://github.com/JulioPerone/task-manager-react-ts-tailwind.git
 cd ToDoList-App
 npm install
 npm run dev
