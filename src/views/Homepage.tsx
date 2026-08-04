@@ -1,10 +1,16 @@
-import VersionSelector from "../components/VersionSelector"
+import ToDoListApp from "./ToDoListApp"
 
 const Homepage = () => {
   return (
     <main>
-      <h1 className="uppsercase text-3xl font-bold flex justify-center mt-4">Mini-Proyecto: ToDo List - Versiones</h1>
-      <VersionSelector />
+      <section>
+        <header>
+          <h1 className="uppercase text-3xl font-bold flex justify-center mt-4">
+            ToDo List App
+          </h1>
+        </header>
+        <ToDoListApp />
+      </section>
     </main>
   )
 }

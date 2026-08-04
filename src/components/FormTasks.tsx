@@ -1,6 +1,7 @@
 import React, { useReducer, useState } from "react"
 import type { Tasks, Task, Actions } from "../types/taskType"
 
+// El estado cambiara segun la accion recibida
 const reducer = (state: Tasks, action: Actions): Task[] => {
     switch (action.type) {
         case "CREATE":
@@ -23,6 +24,7 @@ const FormTasks = () => {
     const [editingTasks, setEditingTasks] = useState<Task | null>(null);
     const [state, dispatch] = useReducer(reducer, []);
 
+    // Creacion y edicion de tareas, si esta en edicion una tarea se dispara la accion EDIT
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
         if (!taskInput.trim()) return;
@@ -31,11 +33,13 @@ const FormTasks = () => {
             dispatch({ type: "EDIT", payload: { id: editingTasks.id, text: taskInput } })
             setEditingTasks(null);
         } else {
+            // Caso contrario, se crea una nueva tarea
             dispatch({ type: "CREATE", payload: taskInput })
         }
         setTaskInput("");
     };
 
+    // Cancelar edicion y limpieza de input.
     const handleCancel = () => {
         dispatch({ type: "CANCEL" })
         setEditingTasks(null)

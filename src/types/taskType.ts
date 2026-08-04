@@ -1,10 +1,8 @@
-//Tarea individual
 export type Task = {
     id: number;
     text: string;
 }
 
-//Lista de tareas
 export type Tasks = Task[];
 
 export type Actions =
