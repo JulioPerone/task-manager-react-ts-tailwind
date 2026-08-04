@@ -19,8 +19,8 @@ git clone https://github.com/JulioPerone/task-manager-react-ts-tailwind.git
 cd ToDoList-App
 npm install
 npm run dev
-´´´
+```
 
-## Instalación
+## Licencia
 Este proyecto está bajo la licencia MIT.  
 Copyright © 2026 Julio Perone
