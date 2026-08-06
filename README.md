@@ -10,13 +10,17 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 - Tailwind CSS → estilos rápidos y consistentes
 - IA → generación y adaptación de código
 
----
-
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
 
 ---
+
+## Progreso de la version - v1.0.0
+- [X] Estructura base con React
+- [x] Tipado estricto con TypeScript
+- [x] Estilos con Tailwind CSS
+- [x] Añadir comentarios
 
 ## Instalación
 
