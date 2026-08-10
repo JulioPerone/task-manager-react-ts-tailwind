@@ -1,6 +1,6 @@
 # ToDo List Evolution
 
-App administrador de tareas que muestra su evolución a través de distintas versiones, integrando tecnologías modernas y generación/adaptación de código con IA
+App para gestion de tareas que muestra su evolución a través de distintas versiones, integrando tecnologías modernas y generación/adaptación de código con IA
 
 ---
 
@@ -22,5 +22,5 @@ npm run dev
 ```
 
 ## Licencia
-Este proyecto está bajo la licencia MIT.  
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
 Copyright © 2026 Julio Perone
