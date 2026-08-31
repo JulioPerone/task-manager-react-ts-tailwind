@@ -32,10 +32,10 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 - [x] Añadir tareas a cada grupo independiente
 - [x] Sistema toggle de temas Light / Dark
 
-## Futuras versiones
-- [ ] Implementación de CRUD completo con useReducer - **v1.2.0**
-- [ ] Sistema de orden por prioridades - **v1.3.0**
-- [ ] Límites de caracteres para nombres de las tareas y Persistencia de datos con LocalStorage - **v1.4.0**
+## Futuras versiones **v1.2.0**
+- [ ] Implementación de CRUD completo con useReducer para grupos como para tareas
+- [ ] Sistema de orden por prioridades
+- [ ] Persistencia de datos con LocalStorage
 
 ---
 
