@@ -5,7 +5,7 @@ import Header from "../components/Header"
 const Homepage = () => {
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-skin transition-all duration-500">
       <header>
         <Header />
       </header>
@@ -14,7 +14,7 @@ const Homepage = () => {
             <CreateGroup />
         </section>
       </main>
-      <footer>
+      <footer className="mt-auto">
         <Footer />
       </footer>
     </div>

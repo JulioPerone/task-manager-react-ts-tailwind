@@ -1,0 +1,50 @@
+/* globals.css */
+:root {
+    --bg-gradient: linear-gradient(to bottom right, #fff891, #a1291a);
+    --text-color: #111111;
+    --border-color: #424242;
+    --accent-color: #ffe816;
+    --surface-color: #dd8819;
+    --inner-color: #ffda89;
+    --input-field: #fffcee;
+    --hover-color: #ffe7a6;
+}
+
+.dark {
+    --bg-gradient: linear-gradient(to bottom right, #76adff, #2e0746);
+    --text-color: #e7e7e7;
+    --border-color: #5c5c5c;
+    --accent-color: #226bc5;
+    --surface-color: #236dd6;
+    --inner-color:  #18283d;
+    --input-field: #315d9b;
+    --hover-color:#4e88da;
+}
+
+.bg-skin {
+    background-image: var(--bg-gradient);
+}
+
+.text-skin {
+  color: var(--text-color);
+}
+
+.border-skin {
+  border-color: var(--border-color);
+}
+
+.surface-skin {
+  background-color: var(--surface-color);
+}
+
+.inner-skin {
+    background-color: var(--inner-color);
+}
+
+.input-skin {
+    background-color: var(--input-field);
+}
+
+.hover-color:hover {
+  background-color: var(--hover-color);
+}
