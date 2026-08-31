@@ -41,30 +41,35 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 
 ## Estructura del proyecto
 
-src/
- ├── components/        # Componentes reutilizables
- │    ├── CreateGroup.tsx
- │    ├── DarkLightTheme.tsx
- │    ├── Footer.tsx
- │    ├── Groupbox.tsx
- │    ├── Header.tsx
- │    ├── TaskGroups.tsx
- ├── context/        # Contexto y provider
- │    ├── ThemeContext.tsx
- │    └── ThemeProvider.tsx
- ├── routes/             # Rutas
- │    └── MyRoutes.ts
- ├── types/             # Contratos TS
- │    └── GroupsForTask.ts
- │    └── ThemeType.ts
- ├── views/             # Vista principal
- │    └── Homepage.tsx
- ├── styles/            # Estilos globales
- │    └── index.css
- │    └── global.css
- ├── App.tsx
- └── main.tsx
+### 🧱 Estructura del proyecto
 
+```bash
+src/
+├── components/ # Componentes reutilizables
+│   ├── CreateGroup.tsx
+│   ├── DarkLightTheme.tsx
+│   ├── Footer.tsx
+│   ├── Groupbox.tsx
+│   ├── Header.tsx
+│   ├── TaskGroups.tsx
+├── context/ # Contexto y provider
+│   ├── ThemeContext.tsx
+│   ├── ThemeProvider.tsx
+├── routes/ # Rutas
+│   ├── MyRoutes.ts
+├── types/ # Contratos TS
+│   ├── GroupsForTask.ts
+│   ├── ThemeType.ts
+├── views/ # Vista principal
+│   ├── Homepage.tsx
+├── styles/ # Estilos globales
+│   ├── index.css
+│   ├── global.css
+├── App.tsx
+├── main.tsx
+```
+
+---
 
 ### Problemas encontrados: Tailwind v4 
 
