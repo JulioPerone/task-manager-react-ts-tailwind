@@ -1,5 +1,5 @@
-import CreateGroup from "../components/CreateGroup"
 import Footer from "../components/Footer"
+import GroupManager from "../components/GroupManager"
 import Header from "../components/Header"
 
 const Homepage = () => {
@@ -11,7 +11,7 @@ const Homepage = () => {
       </header>
       <main className="grow">
         <section>
-            <CreateGroup />
+            <GroupManager />
         </section>
       </main>
       <footer className="mt-auto">
