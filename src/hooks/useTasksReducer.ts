@@ -46,6 +46,9 @@ const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
         case "MOVE_TASK": {
             const { fromGroupId, toGroupId, taskId } = action.payload;
 
+            // Mover al mismo grupo: no hacer nada (evita duplicar)
+            if (fromGroupId === toGroupId) return state;
+
             // Buscar la tarea en el grupo origen
             const taskToMove = state[fromGroupId]?.find(t => t.id === taskId);
             if (!taskToMove) return state;
@@ -69,6 +72,17 @@ const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
                 [action.payload.groupId]: (state[action.payload.groupId] || []).map(t =>
                     t.id === action.payload.taskId ? { ...t, priority: action.payload.priority } : t
                 )
+            };
+
+        case "CLEAR_PRIORITY_TASK":
+            return {
+                ...state,
+                [action.payload.groupId]: (state[action.payload.groupId] || []).map(t => {
+                    if (t.id !== action.payload.taskId) return t;
+                    const next = { ...t };
+                    delete next.priority;
+                    return next;
+                })
             };
 
         case "DELETE_GROUP_TASKS": {

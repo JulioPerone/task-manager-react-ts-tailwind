@@ -30,7 +30,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
                         placeholder="Nombre de tarea"
-                        className="border rounded p-2 w-full"
+                        className="border rounded p-2 w-full input-skin"
                     />
                     <div className="flex gap-2">
                         <button

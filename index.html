@@ -3,6 +3,15 @@
 
 <head>
   <meta charset="UTF-8" />
+  <script>
+    // Aplica el tema guardado ANTES del primer pintado para evitar
+    // el parpadeo light -> dark al recargar (debe coincidir con STORAGE_KEYS.theme).
+    try {
+      if (localStorage.getItem("todolist.theme.v1") === '"dark"') {
+        document.documentElement.classList.add("dark");
+      }
+    } catch (e) { /* LocalStorage no disponible: se queda en light */ }
+  </script>
   <meta name="description" content="Task Manager app para crear, organizar y gestionar tareas de forma simple y rápida.">
   <meta name="keywords" content="task manager, gestor de tareas, productividad, organización, React, TypeScript">
   <meta name="author" content="Julio Perone">

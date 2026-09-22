@@ -1,6 +1,7 @@
 export const STORAGE_KEYS = {
   groups: "todolist.groups.v1",
   tasks: "todolist.tasks.v1",
+  theme: "todolist.theme.v1",
 } as const;
 
 export function loadJSON<T>(key: string, fallback: T): T {

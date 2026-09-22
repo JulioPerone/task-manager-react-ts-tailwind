@@ -7,9 +7,10 @@ type Props = {
     groupId: string;
     groups: Group[];
     dispatchTasks: React.Dispatch<TaskAction>;
+    onEdit: () => void;
 };
 
-const TaskMenu = ({ task, groupId, groups, dispatchTasks }: Props) => {
+const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
     const [open, setOpen] = useState(false);
     const [moveOpen, setMoveOpen] = useState(false);
     const [priorityOpen, setPriorityOpen] = useState(false);
@@ -36,10 +37,18 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks }: Props) => {
     };
 
     const handleSetPriority = (priority: "low" | "medium" | "high" | "very important") => {
-        dispatchTasks({
-            type: "SET_PRIORITY_TASK",
-            payload: { groupId, taskId: task.id, priority },
-        });
+        // Toggle: si ya tiene esa prioridad, se le quita y vuelve a normal
+        if (task.priority === priority) {
+            dispatchTasks({
+                type: "CLEAR_PRIORITY_TASK",
+                payload: { groupId, taskId: task.id },
+            });
+        } else {
+            dispatchTasks({
+                type: "SET_PRIORITY_TASK",
+                payload: { groupId, taskId: task.id, priority },
+            });
+        }
         setPriorityOpen(false);
         setOpen(false);
     };
@@ -155,14 +164,12 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks }: Props) => {
                        p-2 flex flex-col gap-2 animate-slideIn transition-all duration-200
                        overflow-visible"
                         >
-                            {/* Editar */}
+                            {/* Editar: cierra el menú y abre el input inline en la tarea */}
                             <button
-                                onClick={() =>
-                                    dispatchTasks({
-                                        type: "EDIT_TASK",
-                                        payload: { groupId, taskId: task.id, title: "Nuevo título" },
-                                    })
-                                }
+                                onClick={() => {
+                                    closeAll();
+                                    onEdit();
+                                }}
                                 className="flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-neutral-700 rounded"
                             >
                                 <span className="material-symbols-outlined text-sm">edit</span>

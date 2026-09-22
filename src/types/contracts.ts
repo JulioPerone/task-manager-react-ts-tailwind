@@ -32,6 +32,7 @@ export type TaskAction =
 | { type: "TOGGLE_TASK"; payload: { groupId: string; taskId: string }}
 | { type: "MOVE_TASK"; payload: { fromGroupId: string; toGroupId: string; taskId: string }}
 | { type: "SET_PRIORITY_TASK"; payload: { groupId: string; taskId: string; priority: "low" | "medium" | "high" | "very important" }}
+| { type: "CLEAR_PRIORITY_TASK"; payload: { groupId: string; taskId: string }}
 | { type: "DELETE_GROUP_TASKS"; payload: { groupId: string } }
 | { type: "HYDRATE_TASKS"; payload: { tasks: Record<string, Task[]> } }
 | { type: "SET_TASKS"; payload: { tasks: Record<string, Task[]> } }
