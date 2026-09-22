@@ -18,8 +18,7 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
         "very important": "bg-pink-400 border-pink-600 text-pink-800 font-bold",
     };
 
-    // Al completar, el gris neutro reemplaza el tono de la prioridad.
-    // Al desmarcar, vuelve automáticamente el color de la prioridad.
+    // Completada pisa el color de prioridad; al desmarcar se restaura solo
     const completedStyle =
         "bg-neutral-200 border-neutral-400 text-neutral-500";
 

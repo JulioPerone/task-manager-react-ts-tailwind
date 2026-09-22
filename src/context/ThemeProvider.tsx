@@ -1,5 +1,4 @@
-// Crea el contexto de tema y aplica la clase "dark" al <html> para habilitar estilos oscuros
-
+// Tema global con persistencia + sincronización de la clase "dark" en <html>
 import { useState, useEffect } from "react"
 import { ThemeContext } from "./ThemeContext"
 import type { Theme } from "../types/ThemeType"
@@ -19,12 +18,10 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
-    // Persiste el tema para que sobreviva al refrescar
     useEffect(() => {
         saveJSON(STORAGE_KEYS.theme, theme);
     }, [theme]);
 
-    // Aplica o remueve la clase "dark" en el <html> según el estado actual del tema
     useEffect(() => {
         const root = document.documentElement;
         if (theme === "dark") {

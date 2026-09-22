@@ -16,7 +16,6 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Cierra el menú si se hace clic fuera del grupo
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -54,7 +53,6 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
 
     return (
         <div className="rounded-lg p-3 relative">
-            {/* Nombre del grupo o input editable */}
             <div className="flex justify-between items-center mb-4">
                 {isEditing ? (
                     <>
@@ -74,7 +72,6 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
                     <>
                         <h3 className="font-bold">{group.name}</h3>
 
-                        {/* Botón o menú reemplazado */}
                         <div ref={menuRef} className="relative">
                             {!showMenu ? (
                                 <button
@@ -109,7 +106,6 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
                 )}
             </div>
 
-            {/* Mensaje de confirmación */}
             {confirmDelete && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white text-black p-4 rounded shadow-lg">

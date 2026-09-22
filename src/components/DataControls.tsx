@@ -28,8 +28,7 @@ const DataControls = ({ groups, tasks, dispatchGroups, dispatchTasks }: Props) =
       const date = new Date().toISOString().slice(0, 10);
       const fileName = `todolist-plantilla-${date}.csv`;
 
-      // File System Access API => abre el diálogo nativo de Windows
-      // para elegir carpeta y nombre. Fallback a descarga clásica.
+      // Dialogo nativo para elegir destino, con descarga clásica como respaldo
       const w = window as unknown as {
         showSaveFilePicker?: (opts?: unknown) => Promise<{
           createWritable: () => Promise<{
@@ -56,9 +55,8 @@ const DataControls = ({ groups, tasks, dispatchGroups, dispatchTasks }: Props) =
           showMessage(`Plantilla guardada como "${fileName}". Ábrela en Excel, Calc o similar, edítala y luego impórtala.`);
           return;
         } catch (err) {
-          // AbortError = el usuario canceló el diálogo: no hacer nada
+          // El usuario canceló el diálogo: no aplicar el respaldo
           if (err instanceof DOMException && err.name === "AbortError") return;
-          // Otro error: caer al método clásico
         }
       }
 

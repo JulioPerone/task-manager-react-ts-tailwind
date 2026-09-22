@@ -37,7 +37,7 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
     };
 
     const handleSetPriority = (priority: "low" | "medium" | "high" | "very important") => {
-        // Toggle: si ya tiene esa prioridad, se le quita y vuelve a normal
+        // Segunda pulsación quita la prioridad (toggle)
         if (task.priority === priority) {
             dispatchTasks({
                 type: "CLEAR_PRIORITY_TASK",
@@ -62,9 +62,7 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
         setOpen(false);
     };
 
-    // Calcula la posición fija del menú a partir del botón,
-    // con clamp al viewport para que SIEMPRE se muestre completo
-    // y nunca genere scroll en los contenedores padres.
+    // Menú en portal con posición fija limitada al viewport para no generar scroll en padres
     const updatePosition = () => {
         const btn = buttonRef.current?.getBoundingClientRect();
         if (!btn) return;
@@ -76,28 +74,22 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
         const GAP = 12;
         const MARGIN = 8;
 
-        // Por defecto a la derecha del botón, centrado verticalmente
         let left = btn.right + GAP;
         let top = btn.top + btn.height / 2 - menuHeight / 2;
 
-        // Si no cabe a la derecha, voltear a la izquierda
         if (left + menuWidth > window.innerWidth - MARGIN) {
             left = btn.left - menuWidth - GAP;
         }
-        // Clamp horizontal final (por si la pantalla es muy estrecha)
         left = Math.max(MARGIN, Math.min(left, window.innerWidth - menuWidth - MARGIN));
 
-        // Clamp vertical para que nunca se corte arriba/abajo
         top = Math.max(MARGIN, Math.min(top, window.innerHeight - menuHeight - MARGIN));
 
         setMenuPos((prev) => (prev.top === top && prev.left === left ? prev : { top, left }));
     };
 
-    // Posicionamiento inicial al abrir
     const handleToggle = () => {
         if (!open && buttonRef.current) {
             const btn = buttonRef.current.getBoundingClientRect();
-            // Posición provisional para el primer pintado (se corrige en useLayoutEffect)
             setMenuPos({
                 top: Math.max(8, btn.bottom + 8),
                 left: Math.max(8, Math.min(btn.right + 12, window.innerWidth - 190)),
@@ -108,8 +100,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
         }
     };
 
-    // Reposiciona cuando el menú cambia de tamaño (move / priority / confirm)
-    // y cuando hay scroll o resize, para que siga al botón sin cortarse.
     useLayoutEffect(() => {
         if (!open) return;
         updatePosition();
@@ -133,13 +123,11 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
-    // El submenú de prioridad se voltea a la izquierda si no cabe a la derecha
     const flipPriority =
         typeof window !== "undefined" && menuPos.left > window.innerWidth - 320;
 
     return (
         <>
-            {/* Overlay con blur — en portal para no depender de stacking de padres */}
             {open &&
                 createPortal(
                     <div
@@ -164,7 +152,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                        p-2 flex flex-col gap-2 animate-slideIn transition-all duration-200
                        overflow-visible"
                         >
-                            {/* Editar: cierra el menú y abre el input inline en la tarea */}
                             <button
                                 onClick={() => {
                                     closeAll();
@@ -175,7 +162,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                                 <span className="material-symbols-outlined text-sm">edit</span>
                             </button>
 
-                            {/* Duplicar */}
                             <button
                                 onClick={() =>
                                     dispatchTasks({ type: "ADD_TASK", payload: { groupId, title: task.title } })
@@ -185,7 +171,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                                 <span className="material-symbols-outlined text-sm">content_copy</span>
                             </button>
 
-                            {/* Eliminar con confirmación */}
                             <button
                                 onClick={() => setConfirmDelete(!confirmDelete)}
                                 className={`flex items-center gap-2 w-full text-left px-2 py-1 hover:bg-neutral-700 rounded ${confirmDelete ? "bg-neutral-700" : ""}`}
@@ -193,7 +178,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                                 <span className="material-symbols-outlined text-sm">delete</span>
                             </button>
 
-                            {/* Mover */}
                             <button
                                 onClick={() => {
                                     setMoveOpen(!moveOpen);
@@ -218,7 +202,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                                 </div>
                             )}
 
-                            {/* Establecer prioridad + submenu 2 lateral */}
                             <div className="static">
                                 <button
                                     onClick={() => {
@@ -272,7 +255,6 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                                 )}
                             </div>
 
-                            {/* Confirmar eliminación - debajo de todos los iconos */}
                             {confirmDelete && (
                                 <div className="mt-2 p-2 border-t border-neutral-600">
                                     <p className="text-sm text-gray-200 whitespace-nowrap">¿Seguro que quieres eliminar esta tarea?</p>

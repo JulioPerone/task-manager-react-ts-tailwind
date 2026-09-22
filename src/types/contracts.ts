@@ -1,5 +1,3 @@
-// Contratos para Grupos y Tareas
-
 export type Task = {
     id: string;
     title: string;
@@ -14,8 +12,7 @@ export type Group = {
     tasks: Task[],
 }
 
-// Acciones para Grupos y Tareas
-
+// Acciones disponibles para el reducer de grupos y el de tareas
 export type GroupAction = 
 | { type: "ADD_GROUP"; payload: { name: string }}
 | { type: "EDIT_GROUP_NAME"; payload: { id: string; name: string }}

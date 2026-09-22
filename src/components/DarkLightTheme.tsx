@@ -1,5 +1,3 @@
-// Toggle de tema Claro/Oscuro usando el contexto creado
-
 import { useTheme } from "../context/ThemeContext";
 
 const DarkLightTheme = () => {

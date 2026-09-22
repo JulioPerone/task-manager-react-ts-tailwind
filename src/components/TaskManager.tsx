@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { TasksContext } from "../context/TasksContext"; // 👈 importa solo el contexto
+import { TasksContext } from "../context/TasksContext";
 import type { Group } from "../types/contracts";
 import TaskItem from "./TaskItem";
 
 const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) => {
-    const { tasks, dispatchTasks } = useContext(TasksContext)!; // 👈 obtiene estado global
+    const { tasks, dispatchTasks } = useContext(TasksContext)!;
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [showInput, setShowInput] = useState(false);
 

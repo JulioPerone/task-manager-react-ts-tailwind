@@ -2,6 +2,7 @@ import type { Task, TaskAction } from "../types/contracts";
 
 type TasksState = Record<string, Task[]>;
 
+// Reducer de tareas agrupadas por groupId (DELETE_GROUP_TASKS lo usa el borrado en cascada)
 const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
     switch (action.type) {
         case "ADD_TASK":
@@ -46,20 +47,19 @@ const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
         case "MOVE_TASK": {
             const { fromGroupId, toGroupId, taskId } = action.payload;
 
-            // Mover al mismo grupo: no hacer nada (evita duplicar)
+            // Ignora el movimiento dentro del mismo grupo y traslada la referencia entre listas
             if (fromGroupId === toGroupId) return state;
 
             // Buscar la tarea en el grupo origen
             const taskToMove = state[fromGroupId]?.find(t => t.id === taskId);
             if (!taskToMove) return state;
 
-            // Eliminar del origen y añadir al destino
             return {
                 ...state,
                 [fromGroupId]: state[fromGroupId].filter(t => t.id !== taskId),
                 [toGroupId]: [
-                    ...(state[toGroupId] || []), // 👈 si no existe, arranca vacío
-                    taskToMove                     // 👈 aquí se “crea” en el destino
+                    ...(state[toGroupId] || []),
+                    taskToMove
                 ]
             };
         }

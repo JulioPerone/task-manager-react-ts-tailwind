@@ -17,7 +17,6 @@ export type ParsedBoard = {
 
 const DELIMITER = ";";
 
-// Escapa un campo para CSV (cita si contiene delimitador, comillas o salto de línea)
 function escapeField(value: string): string {
   if (value.includes('"')) value = value.replace(/"/g, '""');
   if (
@@ -32,7 +31,7 @@ function escapeField(value: string): string {
   return value;
 }
 
-/** Genera el contenido CSV. Si no hay datos, incluye filas de ejemplo editables. */
+/** Genera el CSV; sin datos incluye ejemplos editables con IDs vacíos (se generan al importar). */
 export function buildCsvContent(
   groups: Group[],
   tasks: Record<string, Task[]>,
@@ -43,8 +42,6 @@ export function buildCsvContent(
     groups.length > 0 && Object.values(tasks).some((t) => t.length > 0);
 
   if (!hasData && groups.length === 0) {
-    // Plantilla con ejemplos: el usuario la edita en Excel/Calc y la reimporta.
-    // Los IDs se dejan vacíos para que la app los genere al importar.
     lines.push(
       ["", "Ejemplo Compras", "", "Comprar leche", "FALSE", "medium"]
         .map(escapeField)
@@ -65,7 +62,7 @@ export function buildCsvContent(
   for (const group of groups) {
     const groupTasks = tasks[group.id] ?? [];
     if (groupTasks.length === 0) {
-      // Fila para grupos sin tareas: así sobreviven al export/import
+      // Grupo vacío: se exporta como fila sin tarea para que sobreviva al import
       lines.push(
         [group.id, group.name, "", "", "", ""].map(escapeField).join(DELIMITER),
       );
@@ -87,11 +84,9 @@ export function buildCsvContent(
     }
   }
 
-  // BOM para que Excel abra bien los acentos (UTF-8)
+  // BOM para que Excel respete acentos en UTF-8
   return "\uFEFF" + lines.join("\r\n");
 }
-
-// ---------- Parsing ----------
 
 function detectDelimiter(headerLine: string): string {
   const candidates = [";", ",", "\t"];
@@ -107,7 +102,6 @@ function detectDelimiter(headerLine: string): string {
   return best;
 }
 
-/** Divide una línea CSV respetando comillas dobles. */
 function splitCsvLine(line: string, delimiter: string): string[] {
   const fields: string[] = [];
   let current = "";
@@ -241,10 +235,8 @@ function parsePriority(raw: string): Task["priority"] | undefined {
 }
 
 /**
- * Convierte el texto de la planilla (CSV) en grupos + tareas.
- * - Acepta delimitadores ; , o tab y alias de cabeceras en ES/EN.
- * - IDs vacíos => se generan nuevos UUIDs.
- * - Filas con igual grupo_nombre (sin id) se agrupan juntas.
+ * Parser tolerante: acepta ; , o tab y cabeceras en ES/EN; IDs vacíos generan UUIDs
+ * y filas con igual grupo_nombre se fusionan en el mismo grupo.
  */
 export function parseCsvContent(text: string): ParsedBoard {
   const clean = text.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
@@ -280,8 +272,7 @@ export function parseCsvContent(text: string): ParsedBoard {
     const nameKey = name.toLowerCase();
     if (!id && byName.has(nameKey)) return byName.get(nameKey)!;
 
-    // Si el id viene de la planilla pero el nombre ya existe con otro id,
-    // reutilizamos el grupo por nombre (el usuario editó a mano).
+    // ID editado a mano con nombre ya existente: reutiliza el grupo por nombre
     if (id && byName.has(nameKey)) {
       const existing = byName.get(nameKey)!;
       byId.set(id, existing);
@@ -312,7 +303,7 @@ export function parseCsvContent(text: string): ParsedBoard {
     }
 
     const title = cell("tarea_titulo").trim();
-    if (!title) continue; // grupo sin tareas: ya quedó creado
+    if (!title) continue;
 
     let taskId = cell("tarea_id").trim() || crypto.randomUUID();
     if (usedTaskIds.has(taskId)) taskId = crypto.randomUUID();
@@ -324,7 +315,6 @@ export function parseCsvContent(text: string): ParsedBoard {
       completed: parseCompleted(cell("completada")),
       priority: parsePriority(cell("prioridad")),
     };
-    // Evita guardar priority: undefined en el JSON
     if (!task.priority) delete task.priority;
     tasks[group.id].push(task);
   }

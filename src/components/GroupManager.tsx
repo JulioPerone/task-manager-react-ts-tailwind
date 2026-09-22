@@ -10,18 +10,18 @@ const GroupManager = () => {
 
     const { tasks, dispatchTasks } = useContext(TasksContext)!;
 
+    // Carga diferida desde localStorage
     const [groups, dispatchGroupsBase] = useReducer(
         useGroupsReducer,
         undefined,
         () => loadJSON<Group[]>(STORAGE_KEYS.groups, []),
     );
 
-    // Persistencia LocalStorage: los grupos sobreviven al refrescar
     useEffect(() => {
         saveJSON(STORAGE_KEYS.groups, groups);
     }, [groups]);
 
-    // Limpieza única de tareas huérfanas (de versiones previas sin borrado en cascada)
+    // Migración puntual: elimina tareas huérfanas de versiones sin borrado en cascada
     useEffect(() => {
         const valid = new Set(groups.map((g) => g.id));
         for (const key of Object.keys(tasks)) {
@@ -32,7 +32,7 @@ const GroupManager = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Envuelve el dispatch para borrar en cascada las tareas del grupo eliminado
+    // Borrado en cascada: eliminar el grupo también elimina sus tareas
     const dispatchgroup = (action: GroupAction) => {
         if (action.type === "DELETE_GROUP") {
             dispatchTasks({ type: "DELETE_GROUP_TASKS", payload: { groupId: action.payload.id } });
@@ -63,7 +63,6 @@ const GroupManager = () => {
                 dispatchTasks={dispatchTasks}
             />
 
-            {/* Input principal para crear grupos */}
             <div className="flex gap-2 mb-6">
                 <input
                     value={newGroupName}
@@ -79,13 +78,12 @@ const GroupManager = () => {
                 </button>
             </div>
 
-            {/* Renderizado de grupos con scroll vertical nativo */}
             <div className="grid grid-cols-4 gap-4 items-start overflow-y-auto overflow-x-hidden max-h-100 pr-2 pb-4 [scrollbar-width:thin]">
                 {groups.map((group) => (
                     <GroupBox
                         key={group.id}
                         group={group}
-                        groups={groups} // 👈 ahora se pasa aquí
+                        groups={groups}
                         dispatchGroups={dispatchgroup}
                     />
                 ))}

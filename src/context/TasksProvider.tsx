@@ -5,6 +5,7 @@ import { loadJSON, saveJSON, STORAGE_KEYS } from "../utils/storage";
 import type { Task } from "../types/contracts";
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
+  // Estado indexado por groupId con carga diferida y persistencia en localStorage
   const [tasks, dispatchTasks] = useReducer(
     useTasksReducer,
     undefined,
