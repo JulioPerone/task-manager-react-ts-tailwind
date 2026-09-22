@@ -44,6 +44,9 @@ npm run dev
 
 ---
 
+### Click y empieza a organizar tu dia!
+https://task-manager-react-ts-tailwind.vercel.app
+
 ## Progreso de la versión - v1.1.0
 - [x] Creación de grupos
 - [x] Añadir tareas a cada grupo independiente
