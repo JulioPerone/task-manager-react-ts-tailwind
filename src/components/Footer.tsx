@@ -1,10 +1,42 @@
 
 const Footer = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-2 mb-3 p-4 text-skin">
+    <footer className="flex flex-col md:flex-row justify-between items-center gap-4 mb-3 p-4 text-skin">
+      
+      <div className="flex flex-col items-center md:items-start gap-1 md:w-1/3">
+        <p className="text-sm">Iconos por Icons8</p>
+        <a
+          href="https://icons8.com"
+          target="_blank"
+          className="surface-skin px-3 py-1 rounded text-sm font-medium hover:opacity-90 transition"
+        >
+          Visitar Icons8
+        </a>
+      </div>
+
+      
+      <div className="flex flex-col items-center gap-1 text-center md:w-1/3">
         <h1>Copyright © 2026 Julio Perone</h1>
         <p>Licencia MIT</p>
-    </div>
+      </div>
+
+      
+      <div className="flex flex-col items-center md:items-end gap-2 md:w-1/3">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-center">Mis redes sociales</p>
+          <div className="flex justify-center gap-2">
+            <a href="https://github.com/JulioPerone" target="_blank" rel="noopener noreferrer" aria-label="Github">
+              <img src="https://img.icons8.com/?size=100&id=12599&format=png&color=000000"
+              width="40" height="40" alt="Github icon" />
+            </a>
+            <a href="https://www.linkedin.com/in/julio-josé-perone-rocholl-341188348" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <img src="https://img.icons8.com/?size=100&id=8808&format=png&color=000000"
+              width="40" height="40" alt="LinkedIn icon" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
   )
 }
 

@@ -15,6 +15,7 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 ![Modo oscuro](./src/assets/Screenshot%20Task-Manager1.1%20Theme%20dark.png)
 
 
+
 ## Tecnologías utilizadas
 - Excalidraw → planificación visual de la idea
 - React + TypeScript → base del frontend
@@ -27,15 +28,41 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 
 ---
 
+## Instalación y uso
+
+```bash
+git clone https://github.com/JulioPerone/task-manager-react-ts-tailwind.git
+cd ToDoList-App
+npm install
+npm run dev
+```
+
+### Cómo usar
+1. Crea grupos y añade tareas a cada grupo
+2. **Exportar plantilla (CSV)** → se descarga y la editas en Excel, LibreOffice Calc o Google Sheets
+3. **Importar planilla (CSV)** → restaura o migra todos tus grupos de una vez
+
+---
+
 ## Progreso de la versión - v1.1.0
 - [x] Creación de grupos
 - [x] Añadir tareas a cada grupo independiente
 - [x] Sistema toggle de temas Light / Dark
 
-## Futuras versiones **v1.2.0**
-- [ ] Implementación de CRUD completo con useReducer para grupos como para tareas
-- [ ] Sistema de orden por prioridades
-- [ ] Persistencia de datos con LocalStorage
+## Versión actual - v1.2.0
+**Gestión modular de grupos, ahora puedes exportar e importar todos tus grupos**
+
+- [x] CRUD completo con useReducer para grupos y tareas
+- [x] Persistencia de datos con LocalStorage
+- [x] Exportar todos los grupos y tareas a plantilla CSV (compatible con Excel, LibreOffice Calc y Google Sheets)
+- [x] Importar planilla CSV para restaurar o migrar todos tus grupos de una vez
+
+## Roadmap - v1.3.0
+- [ ] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
+- [ ] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
+- [ ] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
+- [ ] **Notificaciones locales / PWA:** recordatorios en el dispositivo y soporte instalable offline como paso previo a la nube.
+- [ ] **Recordatorios y calendario con Google:** inicio de sesión con Google para asignación de fecha y hora límite por tarea, con notificaciones por email e integración con Google Calendar.
 
 ---
 
@@ -45,28 +72,43 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 
 ```bash
 src/
+├── assets/ # Imágenes y capturas
+│   ├── Screenshot Task-Manager1.1 Theme dark.png
+│   ├── Screenshot Task-Manager1.1 Theme light.png
 ├── components/ # Componentes reutilizables
-│   ├── CreateGroup.tsx
 │   ├── DarkLightTheme.tsx
+│   ├── DataControls.tsx
 │   ├── Footer.tsx
 │   ├── Groupbox.tsx
+│   ├── GroupManager.tsx
 │   ├── Header.tsx
-│   ├── TaskGroups.tsx
-├── context/ # Contexto y provider
+│   ├── TaskItem.tsx
+│   ├── TaskManager.tsx
+│   ├── TaskMenu.tsx
+├── context/ # Contexto y providers
+│   ├── TasksContext.tsx
+│   ├── TasksProvider.tsx
 │   ├── ThemeContext.tsx
 │   ├── ThemeProvider.tsx
+├── enums/ # Enumerados (reservado, vacío por ahora)
+├── hooks/ # Hooks personalizados con useReducer
+│   ├── useGroupsReducer.ts
+│   ├── useTasksReducer.ts
+├── interfaces/ # Interfaces TS (reservado, vacío por ahora)
 ├── routes/ # Rutas
-│   ├── MyRoutes.ts
+│   ├── MyRoutes.tsx
 ├── types/ # Contratos TS
-│   ├── GroupsForTask.ts
+│   ├── contracts.ts
 │   ├── ThemeType.ts
+├── utils/ # Utilidades (persistencia y CSV)
+│   ├── csv.ts
+│   ├── storage.ts
 ├── views/ # Vista principal
 │   ├── Homepage.tsx
-├── styles/ # Estilos globales
-│   ├── index.css
-│   ├── global.css
 ├── App.tsx
 ├── main.tsx
+├── index.css
+├── globals.css
 ```
 
 ---
@@ -109,15 +151,6 @@ Crear una clase en index.css con la regla font-family, por ejemplo
 }
 ```
 Lo mismo se aplica para los estilos dinamicos, una clase por variable
-
-## Instalación
-
-```bash
-git clone https://github.com/JulioPerone/task-manager-react-ts-tailwind.git
-cd ToDoList-App
-npm install
-npm run dev
-```
 
 ## Licencia
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
