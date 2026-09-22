@@ -8,11 +8,11 @@ App para gestion de tareas que muestra su evolución a través de distintas vers
 
 ### Modo Claro
 
-![Modo claro](./src/assets/Screenshot Task-Manager1.1 Theme light.png)
+![Modo claro](./src/assets/Screenshot%20Task-Manager1.1%20Theme%20light.png)
 
 ### Modo Oscuro
 
-![Modo oscuro](./src/assets/Screenshot Task-Manager1.1 Theme dark.png)
+![Modo oscuro](./src/assets/Screenshot%20Task-Manager1.1%20Theme%20dark.png)
 
 
 
