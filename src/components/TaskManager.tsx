@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { TasksContext } from "../context/TasksContext";
-import type { Group } from "../types/contracts";
+import type { Group, Task } from "../types/contracts";
 import TaskItem, { DRAG_MIME } from "./TaskItem";
 import type { DragTaskPayload } from "./TaskItem";
 
@@ -19,6 +19,15 @@ const Placeholder = ({ label }: { label: string }) => (
     </div>
 );
 
+type Priority = NonNullable<Task["priority"]>;
+
+const PRIORITY_OPTIONS: { value: Priority; label: string; boxClass: string }[] = [
+    { value: "low", label: "Baja", boxClass: "bg-green-400 hover:bg-green-300" },
+    { value: "medium", label: "Media", boxClass: "bg-yellow-400 hover:bg-yellow-300" },
+    { value: "high", label: "Alta", boxClass: "bg-red-400 hover:bg-red-300" },
+    { value: "very important", label: "Muy importante", boxClass: "bg-pink-500 hover:bg-pink-300" },
+];
+
 const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) => {
     const { tasks, dispatchTasks } = useContext(TasksContext)!;
     const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -26,12 +35,24 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
     const [overIndex, setOverIndex] = useState<number | null>(null);
     const [draggingId, setDraggingId] = useState<string | null>(null);
     const dragDepth = useRef(0);
+    // Filtro independiente por grupo: cada TaskManager tiene su propio estado
+    const [priorityFilter, setPriorityFilter] = useState<Priority | null>(null);
+    const [showFilter, setShowFilter] = useState(false);
 
     const handleAddTask = () => {
         if (!newTaskTitle.trim()) return;
         dispatchTasks({ type: "ADD_TASK", payload: { groupId, title: newTaskTitle } });
         setNewTaskTitle("");
         setShowInput(false);
+    };
+
+    const handleSelectPriority = (priority: Priority) => {
+        // Segunda pulsación quita el filtro (toggle)
+        setPriorityFilter((prev) => (prev === priority ? null : priority));
+    };
+
+    const handleClearFilter = () => {
+        setPriorityFilter(null);
     };
 
     // Limpieza global: si el drag termina fuera, ninguna columna queda con placeholder colgado
@@ -65,11 +86,35 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
         setOverIndex((prev) => (prev === idx ? prev : idx));
     };
 
+    const fullList = tasks[groupId] || [];
+    const isFiltering = priorityFilter !== null;
+    const list = isFiltering ? fullList.filter((t) => t.priority === priorityFilter) : fullList;
+
     const handleDropOnIndex = (e: React.DragEvent, toIndex: number) => {
         e.preventDefault();
         e.stopPropagation();
         const data = parsePayload(e);
         if (!data) {
+            resetDragState();
+            return;
+        }
+
+        // Con filtro activo los índices visibles no coinciden con los reales:
+        // se bloquea el reorden interno y los movimientos externos se añaden al final.
+        if (isFiltering) {
+            if (data.fromGroupId === groupId) {
+                resetDragState();
+                return;
+            }
+            dispatchTasks({
+                type: "MOVE_TASK",
+                payload: {
+                    fromGroupId: data.fromGroupId,
+                    toGroupId: groupId,
+                    taskId: data.taskId,
+                    toIndex: fullList.length,
+                },
+            });
             resetDragState();
             return;
         }
@@ -107,18 +152,77 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
         resetDragState();
     };
 
-    const list = tasks[groupId] || [];
-    const showPlaceholder = overIndex !== null;
+    const showPlaceholder = overIndex !== null && !isFiltering;
 
     return (
         <div className="p-4 rounded-2xl inner-skin shadow-2xl">
             {!showInput ? (
-                <button
-                    onClick={() => setShowInput(true)}
-                    className="surface-skin text-white px-3 py-1 rounded w-full hover:bg-blue-700 transition"
-                >
-                    Crear tarea
-                </button>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setShowInput(true)}
+                            className="surface-skin text-white px-3 py-1 rounded flex-1 hover:bg-blue-700 transition"
+                        >
+                            Crear tarea
+                        </button>
+
+                        <button
+                            type="button"
+                            title="Filtrar por prioridad"
+                            aria-label="Filtrar por prioridad"
+                            aria-expanded={showFilter}
+                            aria-pressed={priorityFilter !== null}
+                            onClick={() => setShowFilter((prev) => !prev)}
+                            className={`px-2 py-1 rounded flex items-center justify-center w-[42px] shrink-0 transition hover:opacity-90 ${priorityFilter !== null ? "surface-skin ring-2 ring-offset-1 ring-blue-400" : "surface-skin"}`}
+                        >
+                            <img
+                                width="22"
+                                height="22"
+                                src="https://img.icons8.com/ios-filled/50/filter--v1.png"
+                                alt="Filtrar"
+                                className="invert"
+                            />
+                        </button>
+                    </div>
+
+                    {showFilter && (
+                        <div
+                            role="menu"
+                            aria-label="Filtrar por prioridad"
+                            className="flex items-center justify-center gap-2 p-2 border rounded-xl bg-white/40 dark:bg-black/20"
+                        >
+                            {PRIORITY_OPTIONS.map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    type="button"
+                                    title={opt.label}
+                                    aria-label={opt.label}
+                                    aria-pressed={priorityFilter === opt.value}
+                                    onClick={() => handleSelectPriority(opt.value)}
+                                    className={`block w-8 h-8 rounded-md border-2 border-neutral-800 transition-colors ${opt.boxClass} ${priorityFilter === opt.value ? "ring-2 ring-neutral-800 dark:ring-white scale-110" : ""}`}
+                                />
+                            ))}
+                            <button
+                                type="button"
+                                title="Mostrar todas"
+                                aria-label="Mostrar todas"
+                                onClick={handleClearFilter}
+                                className={`px-2 h-8 rounded-md border-2 text-xs font-semibold transition ${priorityFilter === null ? "bg-neutral-800 text-white border-neutral-800" : "bg-white text-neutral-800 border-neutral-300 hover:bg-neutral-100"}`}
+                            >
+                                Todas
+                            </button>
+                        </div>
+                    )}
+
+                    {priorityFilter !== null && (
+                        <p className="text-xs opacity-70 text-center">
+                            Mostrando {list.length} de {fullList.length} · filtro: {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}{" "}
+                            <button type="button" onClick={handleClearFilter} className="underline hover:opacity-100">
+                                limpiar
+                            </button>
+                        </p>
+                    )}
+                </div>
             ) : (
                 <div className="flex flex-col gap-2">
                     <input
@@ -142,6 +246,12 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                         </button>
                     </div>
                 </div>
+            )}
+
+            {isFiltering && (
+                <p className="text-[11px] opacity-60 text-center mt-2">
+                    Filtro activo: desactívalo para reordenar por arrastre dentro del grupo.
+                </p>
             )}
 
             <div
@@ -172,27 +282,79 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                 onDrop={(e) => handleDropOnIndex(e, overIndex ?? list.length)}
                 className="mt-4 min-h-[24px] rounded-xl p-1 transition-colors duration-200"
             >
-                {list.map((task, idx) => {
-                    const isSource = draggingId === task.id;
-                    return (
-                        <Fragment key={task.id}>
-                            {overIndex === idx && (
-                                <Placeholder label={isSource ? "Soltar aquí" : "Soltar aquí"} />
-                            )}
+                {!isFiltering ? (
+                    <>
+                        {list.map((task, idx) => {
+                            const isSource = draggingId === task.id;
+                            return (
+                                <Fragment key={task.id}>
+                                    {overIndex === idx && (
+                                        <Placeholder label={isSource ? "Soltar aquí" : "Soltar aquí"} />
+                                    )}
+                                    <div
+                                        onDragOver={(e) => {
+                                            if (!hasOurDrag(e)) return;
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            e.dataTransfer.dropEffect = "move";
+                                            setOverIfChanged(idx);
+                                        }}
+                                        onDrop={(e) => handleDropOnIndex(e, idx)}
+                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-[120px] opacity-100 scale-100"}`}
+                                    >
+                                        <TaskItem
+                                            task={task}
+                                            index={idx}
+                                            groupId={groupId}
+                                            groups={groups}
+                                            dispatchTasks={dispatchTasks}
+                                            isDragging={isSource}
+                                            onDragStartItem={(id) => {
+                                                dragDepth.current = 0;
+                                                setDraggingId(id);
+                                            }}
+                                            onDragEndItem={resetDragState}
+                                        />
+                                    </div>
+                                </Fragment>
+                            );
+                        })}
+
+                        {/* Hueco al final: aparece con grow suave y empuja sin saltos */}
+                        {showPlaceholder && overIndex === list.length && list.length > 0 && (
+                            <Placeholder label="Soltar al final" />
+                        )}
+
+                        {list.length === 0 && (
                             <div
                                 onDragOver={(e) => {
                                     if (!hasOurDrag(e)) return;
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    e.dataTransfer.dropEffect = "move";
-                                    setOverIfChanged(idx);
+                                    setOverIfChanged(0);
                                 }}
-                                onDrop={(e) => handleDropOnIndex(e, idx)}
-                                className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-[120px] opacity-100 scale-100"}`}
+                                onDrop={(e) => handleDropOnIndex(e, 0)}
                             >
+                                {showPlaceholder ? (
+                                    <Placeholder label="Suelta para mover aquí" />
+                                ) : (
+                                    <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
+                                        Arrastra tareas aquí
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {list.map((task) => {
+                            const realIndex = fullList.findIndex((t) => t.id === task.id);
+                            const isSource = draggingId === task.id;
+                            return (
                                 <TaskItem
+                                    key={task.id}
                                     task={task}
-                                    index={idx}
+                                    index={realIndex === -1 ? 0 : realIndex}
                                     groupId={groupId}
                                     groups={groups}
                                     dispatchTasks={dispatchTasks}
@@ -203,34 +365,31 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                     }}
                                     onDragEndItem={resetDragState}
                                 />
-                            </div>
-                        </Fragment>
-                    );
-                })}
+                            );
+                        })}
 
-                {/* Hueco al final: aparece con grow suave y empuja sin saltos */}
-                {showPlaceholder && overIndex === list.length && list.length > 0 && (
-                    <Placeholder label="Soltar al final" />
-                )}
-
-                {list.length === 0 && (
-                    <div
-                        onDragOver={(e) => {
-                            if (!hasOurDrag(e)) return;
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setOverIfChanged(0);
-                        }}
-                        onDrop={(e) => handleDropOnIndex(e, 0)}
-                    >
-                        {showPlaceholder ? (
-                            <Placeholder label="Suelta para mover aquí" />
-                        ) : (
+                        {fullList.length === 0 && (
                             <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
-                                Arrastra tareas aquí
+                                No hay tareas todavía
                             </p>
                         )}
-                    </div>
+
+                        {fullList.length > 0 && list.length === 0 && priorityFilter !== null && (
+                            <div className="text-center text-sm py-4 border border-dashed rounded-xl space-y-2">
+                                <p className="opacity-60">
+                                    No hay tareas con prioridad{" "}
+                                    {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleClearFilter}
+                                    className="underline font-medium hover:opacity-100"
+                                >
+                                    Mostrar todas
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
