@@ -1,6 +1,7 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Group, Task, TaskAction } from "../types/contracts";
+import { TrashContext } from "../context/TrashContext";
 
 type Props = {
     task: Task;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
+    const trashCtx = useContext(TrashContext);
     const [open, setOpen] = useState(false);
     const [moveOpen, setMoveOpen] = useState(false);
     const [priorityOpen, setPriorityOpen] = useState(false);
@@ -54,6 +56,14 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
     };
 
     const handleConfirmDelete = (confirmed: boolean) => {
+        // Archiva en papelera antes de eliminar para permitir restaurar
+        if (confirmed) {
+            const groupName = groups.find((g) => g.id === groupId)?.name;
+            trashCtx?.dispatchTrash({
+                type: "TRASH_TASK",
+                payload: { task, groupId, groupName },
+            });
+        }
         dispatchTasks({
             type: "CONFIRM_DELETE_TASK",
             payload: { groupId, taskId: task.id, confirmed },

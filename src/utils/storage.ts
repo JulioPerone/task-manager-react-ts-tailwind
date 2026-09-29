@@ -2,6 +2,7 @@ export const STORAGE_KEYS = {
   groups: "todolist.groups.v1",
   tasks: "todolist.tasks.v1",
   theme: "todolist.theme.v1",
+  trash: "todolist.trash.v1",
 } as const;
 
 // Lectura/escritura tolerante: ante dato corrupto o cuota llena, usa el fallback sin romper la app

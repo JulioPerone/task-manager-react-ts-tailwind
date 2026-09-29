@@ -58,9 +58,9 @@ npm run dev
 - [x] Importar planilla CSV para restaurar o migrar todos tus grupos de una vez
 
 ## Roadmap - v1.3.0
-- [ ] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
-- [ ] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
-- [ ] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
+- [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
+- [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
+- [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
 - [ ] **Notificaciones locales / PWA:** recordatorios en el dispositivo y soporte instalable offline como paso previo a la nube.
 - [ ] **Recordatorios y calendario con Google:** inicio de sesión con Google para asignación de fecha y hora límite por tarea, con notificaciones por email e integración con Google Calendar.
 
