@@ -69,8 +69,6 @@ https://task-manager-react-ts-tailwind.vercel.app
 
 ---
 
-## Estructura del proyecto
-
 ### 🧱 Estructura del proyecto
 
 ```bash
@@ -93,11 +91,9 @@ src/
 │   ├── TasksProvider.tsx
 │   ├── ThemeContext.tsx
 │   ├── ThemeProvider.tsx
-├── enums/ # Enumerados (reservado, vacío por ahora)
 ├── hooks/ # Hooks personalizados con useReducer
 │   ├── useGroupsReducer.ts
 │   ├── useTasksReducer.ts
-├── interfaces/ # Interfaces TS (reservado, vacío por ahora)
 ├── routes/ # Rutas
 │   ├── MyRoutes.tsx
 ├── types/ # Contratos TS
@@ -115,45 +111,6 @@ src/
 ```
 
 ---
-
-### Problemas encontrados: Tailwind v4 
-
-#### Gradiente en modo oscuro
-
-Al implementar el cambio de tema con `ThemeProvider` y `darkMode: "class"`, 
-la clase `dark` se aplicaba correctamente en `<html>`, pero **no habia ningún cambio visual**.
-
-#### Causa ⚠️
-Tailwind v4.2.4 tiene un parser nuevo que **no compila gradientes arbitrarios** 
-(`bg-[linear-gradient(...)]` o `bg-[var(--bg-gradient)]`) como `background-image`.  
-Por eso, aunque la clase aparecía en el HTML, nunca se generaba el estilo.
-
-#### Solución 👍
-Definir el gradiente como **variable CSS** y aplicarlo con una clase personalizada:
-
-```css
-:root {
-  --bg-gradient: linear-gradient(to bottom right, #ffecd2, #fcb69f);
-}
-.dark {
-  --bg-gradient: linear-gradient(to bottom right, #1e3c72, #2a5298);
-}
-.bg-skin {
-  background-image: var(--bg-gradient);
-}
-```
-
-#### Google-Font, el extent.fontFamily ya no genera clases
-
-#### Solucion 👍
-Una vez añadido el link en el "index.html" 
-Crear una clase en index.css con la regla font-family, por ejemplo
-```css
-.font-lexend {
-  font-family: "Lexend", sans-serif;
-}
-```
-Lo mismo se aplica para los estilos dinamicos, una clase por variable
 
 ## Licencia
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
