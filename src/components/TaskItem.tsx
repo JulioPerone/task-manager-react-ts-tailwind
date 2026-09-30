@@ -52,18 +52,19 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
 
     return (
         <div
-            className={`flex items-center justify-between border rounded-2xl p-3 mb-2 transition-all duration-300 ease-in-out animate-fadeIn ${styleClass}`}
+            className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0 sm:justify-between border rounded-2xl p-3 mb-2 transition-all duration-300 ease-in-out animate-fadeIn ${styleClass}`}
         >
-            <div className="flex items-center gap-2 flex-1">
+            <div className="flex items-start sm:items-center gap-2 flex-1 min-w-0">
                 <input
                     type="checkbox"
                     checked={task.completed}
+                    className="mt-1 sm:mt-0 shrink-0 w-5 h-5"
                     onChange={() =>
                         dispatchTasks({ type: "TOGGLE_TASK", payload: { groupId, taskId: task.id } })
                     }
                 />
                 {isEditing ? (
-                    <>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full min-w-0">
                         <input
                             value={draft}
                             autoFocus
@@ -72,23 +73,25 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
                                 if (e.key === "Enter") handleSaveEdit();
                                 if (e.key === "Escape") handleCancelEdit();
                             }}
-                            className="border rounded p-1 w-full text-black"
+                            className="border rounded p-2 w-full text-black text-base min-w-0"
                         />
+                        <div className="flex gap-2">
                         <button
                             onClick={handleSaveEdit}
-                            className="surface-skin text-white px-2 py-1 rounded text-sm"
+                            className="surface-skin text-white px-3 py-2 rounded text-sm flex-1 sm:flex-none"
                         >
                             Guardar
                         </button>
                         <button
                             onClick={handleCancelEdit}
-                            className="bg-gray-400 text-black px-2 py-1 rounded text-sm"
+                            className="bg-gray-400 text-black px-3 py-2 rounded text-sm flex-1 sm:flex-none"
                         >
                             Cancelar
                         </button>
-                    </>
+                        </div>
+                    </div>
                 ) : (
-                    <span className={`${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
+                    <span className={`break-words min-w-0 flex-1 text-sm sm:text-base ${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
                         {task.title}
                     </span>
                 )}

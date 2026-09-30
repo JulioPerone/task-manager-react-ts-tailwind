@@ -40,13 +40,13 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
     const list = priorityFilter ? fullList.filter((t) => t.priority === priorityFilter) : fullList;
 
     return (
-        <div className="p-4 rounded-2xl inner-skin shadow-2xl">
+        <div className="p-3 sm:p-4 rounded-2xl inner-skin shadow-2xl min-w-0">
             {!showInput ? (
                 <div className="flex flex-col gap-2">
                     <div className="flex gap-2">
                         <button
                             onClick={() => setShowInput(true)}
-                            className="surface-skin text-white px-3 py-1 rounded flex-1 hover:bg-blue-700 transition"
+                            className="surface-skin text-white px-3 py-2 rounded flex-1 hover:bg-blue-700 transition text-sm sm:text-base"
                         >
                             Crear tarea
                         </button>
@@ -58,7 +58,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                             aria-expanded={showFilter}
                             aria-pressed={priorityFilter !== null}
                             onClick={() => setShowFilter((prev) => !prev)}
-                            className={`px-2 py-1 rounded flex items-center justify-center w-[42px] shrink-0 transition hover:opacity-90 ${priorityFilter !== null ? "surface-skin ring-2 ring-offset-1 ring-blue-400" : "surface-skin"}`}
+                            className={`px-2 py-2 rounded flex items-center justify-center w-11 h-11 shrink-0 transition hover:opacity-90 touch-44 ${priorityFilter !== null ? "surface-skin ring-2 ring-offset-1 ring-blue-400" : "surface-skin"}`}
                         >
                             <img
                                 width="22"
@@ -74,7 +74,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                         <div
                             role="menu"
                             aria-label="Filtrar por prioridad"
-                            className="flex items-center justify-center gap-2 p-2 border rounded-xl bg-white/40 dark:bg-black/20"
+                            className="flex flex-wrap items-center justify-center gap-2 p-2 border rounded-xl bg-white/40 dark:bg-black/20"
                         >
                             {PRIORITY_OPTIONS.map((opt) => (
                                 <button
@@ -84,7 +84,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                     aria-label={opt.label}
                                     aria-pressed={priorityFilter === opt.value}
                                     onClick={() => handleSelectPriority(opt.value)}
-                                    className={`block w-8 h-8 rounded-md border-2 border-neutral-800 transition-colors ${opt.boxClass} ${priorityFilter === opt.value ? "ring-2 ring-neutral-800 dark:ring-white scale-110" : ""}`}
+                                    className={`block w-11 h-11 rounded-md border-2 border-neutral-800 transition-colors touch-44 ${opt.boxClass} ${priorityFilter === opt.value ? "ring-2 ring-neutral-800 dark:ring-white scale-110" : ""}`}
                                 />
                             ))}
                             <button
@@ -92,7 +92,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                 title="Mostrar todas"
                                 aria-label="Mostrar todas"
                                 onClick={handleClearFilter}
-                                className={`px-2 h-8 rounded-md border-2 text-xs font-semibold transition ${priorityFilter === null ? "bg-neutral-800 text-white border-neutral-800" : "bg-white text-neutral-800 border-neutral-300 hover:bg-neutral-100"}`}
+                                className={`px-3 h-11 rounded-md border-2 text-xs font-semibold transition touch-44 ${priorityFilter === null ? "bg-neutral-800 text-white border-neutral-800" : "bg-white text-neutral-800 border-neutral-300 hover:bg-neutral-100"}`}
                             >
                                 Todas
                             </button>
