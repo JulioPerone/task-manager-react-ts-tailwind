@@ -61,11 +61,11 @@ https://task-manager-react-ts-tailwind.vercel.app
 - [x] Importar planilla CSV para restaurar o migrar todos tus grupos de una vez
 
 ## Roadmap - v1.3.0
-- [ ] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
+- [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
 - [ ] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
-- [ ] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
+- [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
 - [ ] **Notificaciones locales / PWA:** recordatorios en el dispositivo y soporte instalable offline como paso previo a la nube.
-- [ ] **Recordatorios y calendario con Google:** inicio de sesión con Google para asignación de fecha y hora límite por tarea, con notificaciones por email e integración con Google Calendar.
+- [x] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
 
 ---
 
@@ -83,22 +83,28 @@ src/
 │   ├── Groupbox.tsx
 │   ├── GroupManager.tsx
 │   ├── Header.tsx
-│   ├── TaskItem.tsx
-│   ├── TaskManager.tsx
+│   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades
+│   ├── TaskManager.tsx # Drag & drop (REORDER/MOVE con placeholder) + filtro por prioridad
 │   ├── TaskMenu.tsx
+│   ├── TrashButton.tsx
+│   ├── TrashDrawer.tsx
 ├── context/ # Contexto y providers
 │   ├── TasksContext.tsx
 │   ├── TasksProvider.tsx
 │   ├── ThemeContext.tsx
 │   ├── ThemeProvider.tsx
+│   ├── TrashContext.tsx
+│   ├── TrashProvider.tsx
 ├── hooks/ # Hooks personalizados con useReducer
 │   ├── useGroupsReducer.ts
-│   ├── useTasksReducer.ts
+│   ├── useTasksReducer.ts # REORDER_TASK, MOVE_TASK con toIndex + prioridades
+│   ├── useTrashReducer.ts
 ├── routes/ # Rutas
 │   ├── MyRoutes.tsx
 ├── types/ # Contratos TS
 │   ├── contracts.ts
 │   ├── ThemeType.ts
+│   ├── trash.ts
 ├── utils/ # Utilidades (persistencia y CSV)
 │   ├── csv.ts
 │   ├── storage.ts
