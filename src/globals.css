@@ -113,3 +113,47 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* Drag & Drop fluido sin parpadeos */
+
+@keyframes placeholderGrow {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: scale(0.96);
+    margin-bottom: 0;
+  }
+  to {
+    max-height: 80px;
+    opacity: 1;
+    transform: scale(1);
+    margin-bottom: 8px;
+  }
+}
+
+.drop-placeholder-grow {
+  animation: placeholderGrow 0.25s cubic-bezier(0.2, 0, 0, 1) forwards;
+  will-change: max-height, opacity, transform;
+  overflow: hidden;
+}
+
+.task-shift {
+  will-change: max-height, opacity, transform;
+}
+
+/* Alias legacy */
+@keyframes dropPop {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.drop-placeholder {
+  animation: dropPop 0.18s ease-out;
+  will-change: transform, opacity;
+}

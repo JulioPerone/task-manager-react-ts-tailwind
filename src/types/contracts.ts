@@ -28,7 +28,8 @@ export type TaskAction =
 | { type: "DELETE_TASK"; payload: { groupId: string; taskId:string }}
 | { type: "CONFIRM_DELETE_TASK"; payload: { groupId: string; taskId: string, confirmed: boolean }}
 | { type: "TOGGLE_TASK"; payload: { groupId: string; taskId: string }}
-| { type: "MOVE_TASK"; payload: { fromGroupId: string; toGroupId: string; taskId: string }}
+| { type: "MOVE_TASK"; payload: { fromGroupId: string; toGroupId: string; taskId: string; toIndex?: number }}
+| { type: "REORDER_TASK"; payload: { groupId: string; fromIndex: number; toIndex: number }}
 | { type: "SET_PRIORITY_TASK"; payload: { groupId: string; taskId: string; priority: "low" | "medium" | "high" | "very important" }}
 | { type: "CLEAR_PRIORITY_TASK"; payload: { groupId: string; taskId: string }}
 | { type: "DELETE_GROUP_TASKS"; payload: { groupId: string } }

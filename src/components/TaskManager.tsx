@@ -1,7 +1,23 @@
-import { useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { TasksContext } from "../context/TasksContext";
 import type { Group, Task } from "../types/contracts";
-import TaskItem from "./TaskItem";
+import TaskItem, { DRAG_MIME } from "./TaskItem";
+import type { DragTaskPayload } from "./TaskItem";
+
+const hasOurDrag = (e: React.DragEvent) => {
+    try {
+        return Array.from(e.dataTransfer.types || []).includes(DRAG_MIME);
+    } catch {
+        return false;
+    }
+};
+
+const Placeholder = ({ label }: { label: string }) => (
+    <div className="drop-placeholder-grow rounded-2xl border-2 border-dashed border-blue-500/70 bg-blue-500/10 h-[62px] mb-2 flex items-center justify-center gap-2 text-blue-700/80 text-sm font-medium overflow-hidden">
+        <span className="material-symbols-outlined text-base">arrow_downward</span>
+        {label}
+    </div>
+);
 
 type Priority = NonNullable<Task["priority"]>;
 
@@ -16,6 +32,9 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
     const { tasks, dispatchTasks } = useContext(TasksContext)!;
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [showInput, setShowInput] = useState(false);
+    const [overIndex, setOverIndex] = useState<number | null>(null);
+    const [draggingId, setDraggingId] = useState<string | null>(null);
+    const dragDepth = useRef(0);
     // Filtro independiente por grupo: cada TaskManager tiene su propio estado
     const [priorityFilter, setPriorityFilter] = useState<Priority | null>(null);
     const [showFilter, setShowFilter] = useState(false);
@@ -36,8 +55,104 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
         setPriorityFilter(null);
     };
 
+    // Limpieza global: si el drag termina fuera, ninguna columna queda con placeholder colgado
+    useEffect(() => {
+        const onDocDragEnd = () => {
+            dragDepth.current = 0;
+            setOverIndex(null);
+            setDraggingId(null);
+        };
+        document.addEventListener("dragend", onDocDragEnd);
+        return () => document.removeEventListener("dragend", onDocDragEnd);
+    }, []);
+
+    const parsePayload = (e: React.DragEvent): DragTaskPayload | null => {
+        try {
+            const raw = e.dataTransfer.getData(DRAG_MIME);
+            if (!raw) return null;
+            return JSON.parse(raw) as DragTaskPayload;
+        } catch {
+            return null;
+        }
+    };
+
+    const resetDragState = () => {
+        dragDepth.current = 0;
+        setOverIndex(null);
+        setDraggingId(null);
+    };
+
+    const setOverIfChanged = (idx: number) => {
+        setOverIndex((prev) => (prev === idx ? prev : idx));
+    };
+
     const fullList = tasks[groupId] || [];
-    const list = priorityFilter ? fullList.filter((t) => t.priority === priorityFilter) : fullList;
+    const isFiltering = priorityFilter !== null;
+    const list = isFiltering ? fullList.filter((t) => t.priority === priorityFilter) : fullList;
+
+    const handleDropOnIndex = (e: React.DragEvent, toIndex: number) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const data = parsePayload(e);
+        if (!data) {
+            resetDragState();
+            return;
+        }
+
+        // Con filtro activo los índices visibles no coinciden con los reales:
+        // se bloquea el reorden interno y los movimientos externos se añaden al final.
+        if (isFiltering) {
+            if (data.fromGroupId === groupId) {
+                resetDragState();
+                return;
+            }
+            dispatchTasks({
+                type: "MOVE_TASK",
+                payload: {
+                    fromGroupId: data.fromGroupId,
+                    toGroupId: groupId,
+                    taskId: data.taskId,
+                    toIndex: fullList.length,
+                },
+            });
+            resetDragState();
+            return;
+        }
+
+        if (data.fromGroupId === groupId) {
+            // Ajuste visual: si colapsamos el origen, el índice visual corre 1 cuando vienes de arriba
+            // El reducer trabaja con índices originales, así que no restamos aquí.
+            if (data.fromIndex !== toIndex && !(data.fromIndex + 1 === toIndex)) {
+                // Evita no-ops (soltar en el mismo hueco o justo debajo de sí misma)
+                let target = toIndex;
+                if (data.fromIndex < toIndex) target = toIndex - 1;
+                // Si el ajuste lo deja en el mismo sitio, no despachamos
+                if (target !== data.fromIndex) {
+                    dispatchTasks({
+                        type: "REORDER_TASK",
+                        payload: { groupId, fromIndex: data.fromIndex, toIndex: target },
+                    });
+                }
+            } else if (data.fromIndex + 1 === toIndex) {
+                // Soltado justo debajo de sí misma = sin cambio, evita parpadeo/reorden fantasma
+            } else {
+                // mismo índice, nada
+            }
+        } else {
+            dispatchTasks({
+                type: "MOVE_TASK",
+                payload: {
+                    fromGroupId: data.fromGroupId,
+                    toGroupId: groupId,
+                    taskId: data.taskId,
+                    toIndex,
+                },
+            });
+        }
+        resetDragState();
+    };
+
+    const showPlaceholder = overIndex !== null && !isFiltering;
 
     return (
         <div className="p-4 rounded-2xl inner-skin shadow-2xl">
@@ -133,37 +248,148 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                 </div>
             )}
 
-            <div className="mt-4 space-y-2">
-                {list.map((task) => (
-                    <TaskItem
-                        key={task.id}
-                        task={task}
-                        groupId={groupId}
-                        groups={groups}
-                        dispatchTasks={dispatchTasks}
-                    />
-                ))}
+            {isFiltering && (
+                <p className="text-[11px] opacity-60 text-center mt-2">
+                    Filtro activo: desactívalo para reordenar por arrastre dentro del grupo.
+                </p>
+            )}
 
-                {fullList.length === 0 && (
-                    <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
-                        No hay tareas todavía
-                    </p>
-                )}
+            <div
+                onDragEnter={(e) => {
+                    if (!hasOurDrag(e)) return;
+                    e.preventDefault();
+                    dragDepth.current += 1;
+                }}
+                onDragOver={(e) => {
+                    if (!hasOurDrag(e)) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                    // Solo cuando el hover es el fondo (no una tarjeta) -> hueco al final
+                    if (e.target === e.currentTarget) {
+                        setOverIfChanged(list.length);
+                    }
+                }}
+                onDragLeave={(e) => {
+                    if (!hasOurDrag(e)) return;
+                    dragDepth.current = Math.max(0, dragDepth.current - 1);
+                    if (dragDepth.current === 0) {
+                        // Salió de verdad de la columna (no solo cambió de tarjeta)
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                            setOverIndex(null);
+                        }
+                    }
+                }}
+                onDrop={(e) => handleDropOnIndex(e, overIndex ?? list.length)}
+                className="mt-4 min-h-[24px] rounded-xl p-1 transition-colors duration-200"
+            >
+                {!isFiltering ? (
+                    <>
+                        {list.map((task, idx) => {
+                            const isSource = draggingId === task.id;
+                            return (
+                                <Fragment key={task.id}>
+                                    {overIndex === idx && (
+                                        <Placeholder label={isSource ? "Soltar aquí" : "Soltar aquí"} />
+                                    )}
+                                    <div
+                                        onDragOver={(e) => {
+                                            if (!hasOurDrag(e)) return;
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            e.dataTransfer.dropEffect = "move";
+                                            setOverIfChanged(idx);
+                                        }}
+                                        onDrop={(e) => handleDropOnIndex(e, idx)}
+                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-[120px] opacity-100 scale-100"}`}
+                                    >
+                                        <TaskItem
+                                            task={task}
+                                            index={idx}
+                                            groupId={groupId}
+                                            groups={groups}
+                                            dispatchTasks={dispatchTasks}
+                                            isDragging={isSource}
+                                            onDragStartItem={(id) => {
+                                                dragDepth.current = 0;
+                                                setDraggingId(id);
+                                            }}
+                                            onDragEndItem={resetDragState}
+                                        />
+                                    </div>
+                                </Fragment>
+                            );
+                        })}
 
-                {fullList.length > 0 && list.length === 0 && priorityFilter !== null && (
-                    <div className="text-center text-sm py-4 border border-dashed rounded-xl space-y-2">
-                        <p className="opacity-60">
-                            No hay tareas con prioridad{" "}
-                            {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}
-                        </p>
-                        <button
-                            type="button"
-                            onClick={handleClearFilter}
-                            className="underline font-medium hover:opacity-100"
-                        >
-                            Mostrar todas
-                        </button>
-                    </div>
+                        {/* Hueco al final: aparece con grow suave y empuja sin saltos */}
+                        {showPlaceholder && overIndex === list.length && list.length > 0 && (
+                            <Placeholder label="Soltar al final" />
+                        )}
+
+                        {list.length === 0 && (
+                            <div
+                                onDragOver={(e) => {
+                                    if (!hasOurDrag(e)) return;
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setOverIfChanged(0);
+                                }}
+                                onDrop={(e) => handleDropOnIndex(e, 0)}
+                            >
+                                {showPlaceholder ? (
+                                    <Placeholder label="Suelta para mover aquí" />
+                                ) : (
+                                    <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
+                                        Arrastra tareas aquí
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {list.map((task) => {
+                            const realIndex = fullList.findIndex((t) => t.id === task.id);
+                            const isSource = draggingId === task.id;
+                            return (
+                                <TaskItem
+                                    key={task.id}
+                                    task={task}
+                                    index={realIndex === -1 ? 0 : realIndex}
+                                    groupId={groupId}
+                                    groups={groups}
+                                    dispatchTasks={dispatchTasks}
+                                    isDragging={isSource}
+                                    onDragStartItem={(id) => {
+                                        dragDepth.current = 0;
+                                        setDraggingId(id);
+                                    }}
+                                    onDragEndItem={resetDragState}
+                                />
+                            );
+                        })}
+
+                        {fullList.length === 0 && (
+                            <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
+                                No hay tareas todavía
+                            </p>
+                        )}
+
+                        {fullList.length > 0 && list.length === 0 && priorityFilter !== null && (
+                            <div className="text-center text-sm py-4 border border-dashed rounded-xl space-y-2">
+                                <p className="opacity-60">
+                                    No hay tareas con prioridad{" "}
+                                    {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleClearFilter}
+                                    className="underline font-medium hover:opacity-100"
+                                >
+                                    Mostrar todas
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
