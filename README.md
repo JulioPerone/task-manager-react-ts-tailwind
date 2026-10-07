@@ -47,25 +47,11 @@ npm run dev
 ### Click y empieza a organizar tu dia!
 https://task-manager-react-ts-tailwind.vercel.app
 
-## Progreso de la versión - v1.1.0
-- [x] Creación de grupos
-- [x] Añadir tareas a cada grupo independiente
-- [x] Sistema toggle de temas Light / Dark
-
-## Versión actual - v1.2.0
-**Gestión modular de grupos, ahora puedes exportar e importar todos tus grupos**
-
-- [x] CRUD completo con useReducer para grupos y tareas
-- [x] Persistencia de datos con LocalStorage
-- [x] Exportar todos los grupos y tareas a plantilla CSV (compatible con Excel, LibreOffice Calc y Google Sheets)
-- [x] Importar planilla CSV para restaurar o migrar todos tus grupos de una vez
-
 ## Roadmap - v1.3.0
 - [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
-- [ ] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
+- [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
 - [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
-- [ ] **Notificaciones locales / PWA:** recordatorios en el dispositivo y soporte instalable offline como paso previo a la nube.
-- [x] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
+- [ ] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
 
 ---
 

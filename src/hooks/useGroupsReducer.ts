@@ -16,6 +16,11 @@ const useGroupsReducer = ( state: Group[], action: GroupAction): Group[] => {
         if (!action.payload.comfirmed) return state;    
         return state.filter(g => g.id !== action.payload.id); 
 
+    case "RESTORE_GROUP":
+        // Restaura el snapshot tal cual; si ya existe (doble restore), no duplica
+        if (state.some(g => g.id === action.payload.group.id)) return state;
+        return [...state, action.payload.group];
+
     case "HYDRATE_GROUPS":
     case "SET_GROUPS":
         return action.payload.groups;

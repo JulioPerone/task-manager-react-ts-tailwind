@@ -112,6 +112,23 @@ const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
             return next;
         }
 
+        case "RESTORE_TASK": {
+            const current = state[action.payload.groupId] || [];
+            // Evita duplicados ante doble restauración
+            if (current.some(t => t.id === action.payload.task.id)) return state;
+            return {
+                ...state,
+                [action.payload.groupId]: [...current, action.payload.task],
+            };
+        }
+
+        case "RESTORE_GROUP_TASKS": {
+            const current = state[action.payload.groupId] || [];
+            const known = new Set(current.map(t => t.id));
+            const merged = [...current, ...action.payload.tasks.filter(t => !known.has(t.id))];
+            return { ...state, [action.payload.groupId]: merged };
+        }
+
         case "HYDRATE_TASKS":
         case "SET_TASKS":
             return action.payload.tasks;

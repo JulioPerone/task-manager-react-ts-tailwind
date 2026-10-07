@@ -2,13 +2,16 @@ import { useContext, useEffect, useReducer, useState } from "react"
 import useGroupsReducer from "../hooks/useGroupsReducer";
 import GroupBox from "./Groupbox";
 import DataControls from "./DataControls";
+import TrashDrawer from "./TrashDrawer";
 import { TasksContext } from "../context/TasksContext";
+import { TrashContext } from "../context/TrashContext";
 import { loadJSON, saveJSON, STORAGE_KEYS } from "../utils/storage";
 import type { Group, GroupAction } from "../types/contracts";
 
 const GroupManager = () => {
 
     const { tasks, dispatchTasks } = useContext(TasksContext)!;
+    const { trash, dispatchTrash, isTrashOpen, setTrashOpen } = useContext(TrashContext)!;
 
     // Carga diferida desde localStorage
     const [groups, dispatchGroupsBase] = useReducer(
@@ -32,15 +35,108 @@ const GroupManager = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Borrado en cascada: eliminar el grupo también elimina sus tareas
+    // Archiva el snapshot del grupo + sus tareas antes de eliminarlo
+    const archiveGroup = (id: string) => {
+        const group = groups.find((g) => g.id === id);
+        if (!group) return;
+        dispatchTrash({
+            type: "TRASH_GROUP",
+            payload: { group, tasks: tasks[id] || [] },
+        });
+    };
+
+    // Borrado en cascada: archiva en papelera y eliminar el grupo también elimina sus tareas
     const dispatchgroup = (action: GroupAction) => {
         if (action.type === "DELETE_GROUP") {
+            archiveGroup(action.payload.id);
             dispatchTasks({ type: "DELETE_GROUP_TASKS", payload: { groupId: action.payload.id } });
         }
         if (action.type === "CONFIRM_DELETE_GROUP" && action.payload.comfirmed) {
+            archiveGroup(action.payload.id);
             dispatchTasks({ type: "DELETE_GROUP_TASKS", payload: { groupId: action.payload.id } });
         }
         dispatchGroupsBase(action);
+    };
+
+    // --- Restauración desde papelera ---
+    const ensureGroupExists = (groupId: string, groupName?: string) => {
+        if (groups.some((g) => g.id === groupId)) return;
+        dispatchGroupsBase({
+            type: "RESTORE_GROUP",
+            payload: { group: { id: groupId, name: groupName ?? "Grupo recuperado", tasks: [] } },
+        });
+    };
+
+    const handleRestoreGroup = (id: string) => {
+        const snapshot = trash.groups.find((g) => g.group.id === id);
+        if (!snapshot) return;
+        dispatchGroupsBase({ type: "RESTORE_GROUP", payload: { group: snapshot.group } });
+        dispatchTasks({
+            type: "RESTORE_GROUP_TASKS",
+            payload: { groupId: snapshot.group.id, tasks: snapshot.tasks },
+        });
+        dispatchTrash({ type: "RESTORE_GROUP", payload: { id } });
+    };
+
+    const handleRestoreTask = (groupId: string, taskId: string) => {
+        const entry = trash.tasks.find((t) => t.groupId === groupId && t.task.id === taskId);
+        if (!entry) return;
+        ensureGroupExists(groupId, entry.groupName);
+        dispatchTasks({ type: "RESTORE_TASK", payload: { groupId, task: entry.task } });
+        dispatchTrash({ type: "RESTORE_TASK", payload: { groupId, taskId } });
+    };
+
+    const handleRestoreAllGroups = () => {
+        for (const snapshot of trash.groups) {
+            dispatchGroupsBase({ type: "RESTORE_GROUP", payload: { group: snapshot.group } });
+            dispatchTasks({
+                type: "RESTORE_GROUP_TASKS",
+                payload: { groupId: snapshot.group.id, tasks: snapshot.tasks },
+            });
+        }
+        dispatchTrash({ type: "RESTORE_ALL_GROUPS" });
+    };
+
+    const handleRestoreAllTasks = () => {
+        const restoredGroupIds = new Set(groups.map((g) => g.id));
+        for (const entry of trash.tasks) {
+            if (!restoredGroupIds.has(entry.groupId)) {
+                dispatchGroupsBase({
+                    type: "RESTORE_GROUP",
+                    payload: {
+                        group: { id: entry.groupId, name: entry.groupName ?? "Grupo recuperado", tasks: [] },
+                    },
+                });
+                restoredGroupIds.add(entry.groupId);
+            }
+            dispatchTasks({ type: "RESTORE_TASK", payload: { groupId: entry.groupId, task: entry.task } });
+        }
+        dispatchTrash({ type: "RESTORE_ALL_TASKS" });
+    };
+
+    const handleRestoreAll = () => {
+        const restoredGroupIds = new Set(groups.map((g) => g.id));
+        for (const snapshot of trash.groups) {
+            dispatchGroupsBase({ type: "RESTORE_GROUP", payload: { group: snapshot.group } });
+            dispatchTasks({
+                type: "RESTORE_GROUP_TASKS",
+                payload: { groupId: snapshot.group.id, tasks: snapshot.tasks },
+            });
+            restoredGroupIds.add(snapshot.group.id);
+        }
+        for (const entry of trash.tasks) {
+            if (!restoredGroupIds.has(entry.groupId)) {
+                dispatchGroupsBase({
+                    type: "RESTORE_GROUP",
+                    payload: {
+                        group: { id: entry.groupId, name: entry.groupName ?? "Grupo recuperado", tasks: [] },
+                    },
+                });
+                restoredGroupIds.add(entry.groupId);
+            }
+            dispatchTasks({ type: "RESTORE_TASK", payload: { groupId: entry.groupId, task: entry.task } });
+        }
+        dispatchTrash({ type: "RESTORE_ALL" });
     };
 
     const [newGroupName, setNewGroupName] = useState("");
@@ -88,6 +184,22 @@ const GroupManager = () => {
                     />
                 ))}
             </div>
+
+            <TrashDrawer
+                open={isTrashOpen}
+                onClose={() => setTrashOpen(false)}
+                trash={trash}
+                onRestoreGroup={handleRestoreGroup}
+                onRestoreTask={handleRestoreTask}
+                onRestoreAllGroups={handleRestoreAllGroups}
+                onRestoreAllTasks={handleRestoreAllTasks}
+                onRestoreAll={handleRestoreAll}
+                onPurgeGroup={(id) => dispatchTrash({ type: "PURGE_GROUP", payload: { id } })}
+                onPurgeTask={(groupId, taskId) =>
+                    dispatchTrash({ type: "PURGE_TASK", payload: { groupId, taskId } })
+                }
+                onEmptyTrash={() => dispatchTrash({ type: "EMPTY_TRASH" })}
+            />
         </div>
     );
 };

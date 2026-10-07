@@ -9,6 +9,7 @@
   --input-field: #fff6cd;
   --hover-color: #e6bc4c;
   --task-bg-default: #fef3c7;
+  --task-trash: #d81919;
 }
 
 .dark {
@@ -21,6 +22,7 @@
   --input-field: #5b82b8;
   --hover-color: #4585df;
   --task-border-default: #374151;
+  --task-trash: #091796;
 }
 
 .bg-skin {
@@ -49,6 +51,10 @@
 
 .hover-color:hover {
   background-color: var(--hover-color);
+}
+
+.task-trash {
+  color: var(--task-trash);
 }
 
 .task-default {
