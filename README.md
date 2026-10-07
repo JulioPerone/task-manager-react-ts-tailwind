@@ -44,29 +44,16 @@ npm run dev
 
 ---
 
-## Progreso de la versión - v1.1.0
-- [x] Creación de grupos
-- [x] Añadir tareas a cada grupo independiente
-- [x] Sistema toggle de temas Light / Dark
-
-## Versión actual - v1.2.0
-**Gestión modular de grupos, ahora puedes exportar e importar todos tus grupos**
-
-- [x] CRUD completo con useReducer para grupos y tareas
-- [x] Persistencia de datos con LocalStorage
-- [x] Exportar todos los grupos y tareas a plantilla CSV (compatible con Excel, LibreOffice Calc y Google Sheets)
-- [x] Importar planilla CSV para restaurar o migrar todos tus grupos de una vez
+### Click y empieza a organizar tu dia!
+https://task-manager-react-ts-tailwind.vercel.app
 
 ## Roadmap - v1.3.0
 - [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
 - [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
 - [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
-- [ ] **Notificaciones locales / PWA:** recordatorios en el dispositivo y soporte instalable offline como paso previo a la nube.
-- [ ] **Recordatorios y calendario con Google:** inicio de sesión con Google para asignación de fecha y hora límite por tarea, con notificaciones por email e integración con Google Calendar.
+- [ ] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
 
 ---
-
-## Estructura del proyecto
 
 ### 🧱 Estructura del proyecto
 
@@ -82,24 +69,28 @@ src/
 │   ├── Groupbox.tsx
 │   ├── GroupManager.tsx
 │   ├── Header.tsx
-│   ├── TaskItem.tsx
-│   ├── TaskManager.tsx
+│   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades
+│   ├── TaskManager.tsx # Drag & drop (REORDER/MOVE con placeholder) + filtro por prioridad
 │   ├── TaskMenu.tsx
+│   ├── TrashButton.tsx
+│   ├── TrashDrawer.tsx
 ├── context/ # Contexto y providers
 │   ├── TasksContext.tsx
 │   ├── TasksProvider.tsx
 │   ├── ThemeContext.tsx
 │   ├── ThemeProvider.tsx
-├── enums/ # Enumerados (reservado, vacío por ahora)
+│   ├── TrashContext.tsx
+│   ├── TrashProvider.tsx
 ├── hooks/ # Hooks personalizados con useReducer
 │   ├── useGroupsReducer.ts
-│   ├── useTasksReducer.ts
-├── interfaces/ # Interfaces TS (reservado, vacío por ahora)
+│   ├── useTasksReducer.ts # REORDER_TASK, MOVE_TASK con toIndex + prioridades
+│   ├── useTrashReducer.ts
 ├── routes/ # Rutas
 │   ├── MyRoutes.tsx
 ├── types/ # Contratos TS
 │   ├── contracts.ts
 │   ├── ThemeType.ts
+│   ├── trash.ts
 ├── utils/ # Utilidades (persistencia y CSV)
 │   ├── csv.ts
 │   ├── storage.ts
@@ -112,45 +103,6 @@ src/
 ```
 
 ---
-
-### Problemas encontrados: Tailwind v4 
-
-#### Gradiente en modo oscuro
-
-Al implementar el cambio de tema con `ThemeProvider` y `darkMode: "class"`, 
-la clase `dark` se aplicaba correctamente en `<html>`, pero **no habia ningún cambio visual**.
-
-#### Causa ⚠️
-Tailwind v4.2.4 tiene un parser nuevo que **no compila gradientes arbitrarios** 
-(`bg-[linear-gradient(...)]` o `bg-[var(--bg-gradient)]`) como `background-image`.  
-Por eso, aunque la clase aparecía en el HTML, nunca se generaba el estilo.
-
-#### Solución 👍
-Definir el gradiente como **variable CSS** y aplicarlo con una clase personalizada:
-
-```css
-:root {
-  --bg-gradient: linear-gradient(to bottom right, #ffecd2, #fcb69f);
-}
-.dark {
-  --bg-gradient: linear-gradient(to bottom right, #1e3c72, #2a5298);
-}
-.bg-skin {
-  background-image: var(--bg-gradient);
-}
-```
-
-#### Google-Font, el extent.fontFamily ya no genera clases
-
-#### Solucion 👍
-Una vez añadido el link en el "index.html" 
-Crear una clase en index.css con la regla font-family, por ejemplo
-```css
-.font-lexend {
-  font-family: "Lexend", sans-serif;
-}
-```
-Lo mismo se aplica para los estilos dinamicos, una clase por variable
 
 ## Licencia
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
