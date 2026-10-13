@@ -147,9 +147,9 @@ const TaskMenu = ({ task, groupId, groups, dispatchTasks, onEdit }: Props) => {
                     document.body
                 )}
 
-            <div>
-                <button ref={buttonRef} onClick={handleToggle} className="px-2">
-                    <span className="material-symbols-outlined">more_vert</span>
+            <div className="shrink-0">
+                <button ref={buttonRef} onClick={handleToggle} aria-label="Opciones de tarea" className="flex items-center justify-center min-w-[32px] min-h-[32px] px-1 py-0.5 rounded-md hover:bg-black/10 transition">
+                    <span className="material-symbols-outlined text-[20px] sm:text-2xl leading-none">more_vert</span>
                 </button>
 
                 {open &&

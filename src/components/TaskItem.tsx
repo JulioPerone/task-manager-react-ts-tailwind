@@ -52,13 +52,13 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
 
     return (
         <div
-            className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0 sm:justify-between border rounded-2xl p-3 mb-2 transition-all duration-300 ease-in-out animate-fadeIn ${styleClass}`}
+            className={`flex flex-row items-start gap-2 justify-between border rounded-xl sm:rounded-2xl p-2 sm:p-3 mb-1.5 sm:mb-2 transition-all duration-300 ease-in-out animate-fadeIn ${styleClass}`}
         >
-            <div className="flex items-start sm:items-center gap-2 flex-1 min-w-0">
+            <div className="flex items-start gap-2 flex-1 min-w-0">
                 <input
                     type="checkbox"
                     checked={task.completed}
-                    className="mt-1 sm:mt-0 shrink-0 w-5 h-5"
+                    className="mt-0.5 shrink-0 w-4 h-4 sm:w-5 sm:h-5"
                     onChange={() =>
                         dispatchTasks({ type: "TOGGLE_TASK", payload: { groupId, taskId: task.id } })
                     }
@@ -91,13 +91,14 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
                         </div>
                     </div>
                 ) : (
-                    <span className={`break-words min-w-0 flex-1 text-sm sm:text-base ${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
+                    <span className={`break-words min-w-0 flex-1 text-[13px] leading-snug sm:text-base ${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
                         {task.title}
                     </span>
                 )}
             </div>
 
             {!isEditing && (
+                <div className="shrink-0 self-start -mr-1 -mt-0.5">
                 <TaskMenu
                     task={task}
                     groupId={groupId}
@@ -105,6 +106,7 @@ const TaskItem = ({ task, groupId, groups, dispatchTasks }: Props) => {
                     dispatchTasks={dispatchTasks}
                     onEdit={handleStartEdit}
                 />
+                </div>
             )}
         </div>
     );
