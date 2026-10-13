@@ -44,23 +44,44 @@ const useTasksReducer = (state: TasksState, action: TaskAction): TasksState => {
                 )
             };
 
-        case "MOVE_TASK": {
-            const { fromGroupId, toGroupId, taskId } = action.payload;
+        case "REORDER_TASK": {
+            const { groupId, fromIndex, toIndex } = action.payload;
+            const list = [...(state[groupId] || [])];
+            if (fromIndex === toIndex) return state;
+            if (fromIndex < 0 || toIndex < 0 || fromIndex >= list.length) return state;
+            const [moved] = list.splice(fromIndex, 1);
+            if (!moved) return state;
+            const clamped = Math.max(0, Math.min(toIndex, list.length));
+            list.splice(clamped, 0, moved);
+            return {
+                ...state,
+                [groupId]: list
+            };
+        }
 
-            // Ignora el movimiento dentro del mismo grupo y traslada la referencia entre listas
+        case "MOVE_TASK": {
+            const { fromGroupId, toGroupId, taskId, toIndex } = action.payload;
+
+            // El reorden dentro del mismo grupo lo gestiona REORDER_TASK
             if (fromGroupId === toGroupId) return state;
 
-            // Buscar la tarea en el grupo origen
-            const taskToMove = state[fromGroupId]?.find(t => t.id === taskId);
+            const source = [...(state[fromGroupId] || [])];
+            const dest = [...(state[toGroupId] || [])];
+            const fromIdx = source.findIndex(t => t.id === taskId);
+            if (fromIdx === -1) return state;
+
+            const [taskToMove] = source.splice(fromIdx, 1);
             if (!taskToMove) return state;
+
+            const insertAt = toIndex === undefined
+                ? dest.length
+                : Math.max(0, Math.min(toIndex, dest.length));
+            dest.splice(insertAt, 0, taskToMove);
 
             return {
                 ...state,
-                [fromGroupId]: state[fromGroupId].filter(t => t.id !== taskId),
-                [toGroupId]: [
-                    ...(state[toGroupId] || []),
-                    taskToMove
-                ]
+                [fromGroupId]: source,
+                [toGroupId]: dest
             };
         }
 
