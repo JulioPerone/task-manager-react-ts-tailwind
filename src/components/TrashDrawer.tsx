@@ -53,26 +53,26 @@ const TrashDrawer = ({
         role="dialog"
         aria-hidden={!open}
         aria-label="Papelera de grupos y tareas"
-        className={`fixed top-0 right-0 h-full w-full max-w-md z-50 bg-skin shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full sm:max-w-md z-50 bg-skin shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <header className="flex items-center justify-between p-4 border-b">
+        <header className="flex items-center justify-between p-4 border-b gap-2">
           <h2 className="font-bold text-lg uppercase">Papelera</h2>
           <button
             onClick={onClose}
             aria-label="Cerrar papelera"
-            className="material-symbols-outlined p-2 rounded-full hover:bg-neutral-200"
+            className="material-symbols-outlined p-2 rounded-full hover:bg-neutral-200 touch-44 flex items-center justify-center"
           >
             close
           </button>
         </header>
 
-        <div className="flex flex-wrap gap-2 p-4 border-b">
+        <div className="flex flex-col xs:flex-row sm:flex-row flex-wrap gap-2 p-4 border-b">
           <button
             onClick={onRestoreAll}
             disabled={total === 0}
-            className="surface-skin text-white px-3 py-1 rounded disabled:opacity-50"
+            className="surface-skin text-white px-3 py-2 rounded disabled:opacity-50 w-full xs:w-auto text-sm sm:text-base"
           >
             Restaurar todo ({total})
           </button>
@@ -83,7 +83,7 @@ const TrashDrawer = ({
               }
             }}
             disabled={total === 0}
-            className="bg-red-600 text-white px-3 py-1 rounded disabled:opacity-50"
+            className="bg-red-600 text-white px-3 py-2 rounded disabled:opacity-50 w-full xs:w-auto text-sm sm:text-base"
           >
             Vaciar papelera
           </button>

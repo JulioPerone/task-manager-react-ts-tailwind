@@ -130,12 +130,12 @@ const TaskItem = ({
             draggable={!isEditing}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            className={`flex items-center justify-between border rounded-2xl p-3 mb-2 transition-all duration-200 ease-out animate-fadeIn cursor-grab active:cursor-grabbing select-none ${styleClass} ${isDragging ? "opacity-30 scale-[0.97] saturate-50" : "hover:-translate-y-0.5 hover:shadow-lg"}`}
+            className={`flex flex-row items-start gap-2 justify-between border rounded-xl sm:rounded-2xl p-2 sm:p-3 mb-1.5 sm:mb-2 transition-all duration-200 ease-out animate-fadeIn cursor-grab active:cursor-grabbing select-none ${styleClass} ${isDragging ? "opacity-30 scale-[0.97] saturate-50" : "hover:-translate-y-0.5 hover:shadow-lg"}`}
         >
-            <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="flex items-start gap-2 flex-1 min-w-0">
                 <span
                     title="Arrastra para reordenar"
-                    className="material-symbols-outlined text-base opacity-60 select-none cursor-grab hover:opacity-100 hover:scale-110 transition"
+                    className="material-symbols-outlined text-base opacity-60 select-none cursor-grab hover:opacity-100 hover:scale-110 transition mt-0.5 shrink-0 hidden sm:inline"
                     aria-hidden
                 >
                     drag_indicator
@@ -143,12 +143,13 @@ const TaskItem = ({
                 <input
                     type="checkbox"
                     checked={task.completed}
+                    className="mt-0.5 shrink-0 w-4 h-4 sm:w-5 sm:h-5"
                     onChange={() =>
                         dispatchTasks({ type: "TOGGLE_TASK", payload: { groupId, taskId: task.id } })
                     }
                 />
                 {isEditing ? (
-                    <>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full min-w-0">
                         <input
                             value={draft}
                             autoFocus
@@ -157,29 +158,32 @@ const TaskItem = ({
                                 if (e.key === "Enter") handleSaveEdit();
                                 if (e.key === "Escape") handleCancelEdit();
                             }}
-                            className="border rounded p-1 w-full text-black"
+                            className="border rounded p-2 w-full text-black text-base min-w-0"
                         />
+                        <div className="flex gap-2">
                         <button
                             onClick={handleSaveEdit}
-                            className="surface-skin text-white px-2 py-1 rounded text-sm"
+                            className="surface-skin text-white px-3 py-2 rounded text-sm flex-1 sm:flex-none"
                         >
                             Guardar
                         </button>
                         <button
                             onClick={handleCancelEdit}
-                            className="bg-gray-400 text-black px-2 py-1 rounded text-sm"
+                            className="bg-gray-400 text-black px-3 py-2 rounded text-sm flex-1 sm:flex-none"
                         >
                             Cancelar
                         </button>
-                    </>
+                        </div>
+                    </div>
                 ) : (
-                    <span className={`truncate ${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
+                    <span className={`break-words min-w-0 flex-1 text-[13px] leading-snug sm:text-base ${task.completed ? "line-through decoration-2 opacity-70" : ""}`}>
                         {task.title}
                     </span>
                 )}
             </div>
 
             {!isEditing && (
+                <div className="shrink-0 self-start -mr-1 -mt-0.5">
                 <TaskMenu
                     task={task}
                     groupId={groupId}
@@ -187,6 +191,7 @@ const TaskItem = ({
                     dispatchTasks={dispatchTasks}
                     onEdit={handleStartEdit}
                 />
+                </div>
             )}
         </div>
     );

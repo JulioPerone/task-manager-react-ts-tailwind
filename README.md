@@ -51,7 +51,7 @@ https://task-manager-react-ts-tailwind.vercel.app
 - [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
 - [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
 - [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
-- [ ] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
+- [x] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
 
 ---
 
@@ -66,14 +66,14 @@ src/
 │   ├── DarkLightTheme.tsx
 │   ├── DataControls.tsx
 │   ├── Footer.tsx
-│   ├── Groupbox.tsx
-│   ├── GroupManager.tsx
-│   ├── Header.tsx
-│   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades
+│   ├── Groupbox.tsx # Grid responsive 1-2-3-4 cols
+│   ├── GroupManager.tsx # Grid responsive + papelera
+│   ├── Header.tsx # Fluid-type + layout responsive
+│   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades + compacto móvil
 │   ├── TaskManager.tsx # Drag & drop (REORDER/MOVE con placeholder) + filtro por prioridad
 │   ├── TaskMenu.tsx
 │   ├── TrashButton.tsx
-│   ├── TrashDrawer.tsx
+│   ├── TrashDrawer.tsx # Submenú deslizante responsive
 ├── context/ # Contexto y providers
 │   ├── TasksContext.tsx
 │   ├── TasksProvider.tsx
@@ -95,11 +95,11 @@ src/
 │   ├── csv.ts
 │   ├── storage.ts
 ├── views/ # Vista principal
-│   ├── Homepage.tsx
+│   ├── Homepage.tsx # Layout responsive
 ├── App.tsx
 ├── main.tsx
 ├── index.css
-├── globals.css
+├── globals.css # Fluid-type, touch 44px, animaciones DnD
 ```
 
 ---

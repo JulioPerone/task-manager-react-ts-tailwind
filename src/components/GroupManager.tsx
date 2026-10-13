@@ -149,8 +149,8 @@ const GroupManager = () => {
 
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl font-bold mb-4">Gestión de Grupos</h2>
+        <div className="p-3 sm:p-6">
+            <h2 className="fluid-h2 font-bold mb-4">Gestión de Grupos</h2>
 
             <DataControls
                 groups={groups}
@@ -164,17 +164,17 @@ const GroupManager = () => {
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
                     placeholder="Nombre del grupo"
-                    className="border rounded-2xl p-2 w-1/3"
+                    className="border rounded-2xl p-3 w-full sm:w-1/2 lg:w-1/3 input-skin text-base"
                 />
                 <button
                     onClick={handleAddGroup}
-                    className= "text-white py-1 rounded"
+                    className= "text-white py-1 rounded touch-44 shrink-0 flex items-center justify-center"
                 >
-                    <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/add--v1.png" alt="add--v1"/>
+                    <img width="44" height="44" src="https://img.icons8.com/ios-filled/50/add--v1.png" alt="add--v1"/>
                 </button>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 items-start overflow-y-auto overflow-x-hidden max-h-100 pr-2 pb-4 [scrollbar-width:thin]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 items-start overflow-y-auto overflow-x-hidden max-h-[70vh] sm:max-h-100 pr-1 sm:pr-2 pb-4 [scrollbar-width:thin]">
                 {groups.map((group) => (
                     <GroupBox
                         key={group.id}

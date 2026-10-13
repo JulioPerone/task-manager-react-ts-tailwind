@@ -52,31 +52,31 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
     };
 
     return (
-        <div className="rounded-lg p-3 relative">
-            <div className="flex justify-between items-center mb-4">
+        <div className="rounded-lg p-3 sm:p-4 relative w-full min-w-0">
+            <div className="flex justify-between items-center gap-2 mb-3 sm:mb-4 min-w-0">
                 {isEditing ? (
                     <>
                         <input
                             value={editedName}
                             onChange={(e) => setEditedName(e.target.value)}
-                            className="border rounded p-1 w-full mr-2"
+                            className="border rounded p-2 w-full mr-2 text-base min-w-0"
                         />
                         <button
                             onClick={handleSaveName}
-                            className="surface-skin text-white px-3 py-1 rounded"
+                            className="surface-skin text-white px-3 py-2 rounded shrink-0"
                         >
                             Guardar
                         </button>
                     </>
                 ) : (
                     <>
-                        <h3 className="font-bold">{group.name}</h3>
+                        <h3 className="font-bold text-base sm:text-lg truncate flex-1 min-w-0">{group.name}</h3>
 
-                        <div ref={menuRef} className="relative">
+                        <div ref={menuRef} className="relative shrink-0">
                             {!showMenu ? (
                                 <button
                                     onClick={() => setShowMenu(true)}
-                                    className="material-symbols-outlined"
+                                    className="material-symbols-outlined touch-44 flex items-center justify-center"
                                 >
                                     more_vert
                                 </button>
