@@ -130,7 +130,7 @@ img {
 
 /* Tipografia fluida */
 .fluid-h1 {
-  font-size: clamp(1.5rem, 5vw + 0.5rem, 2.5rem);
+  font-size: clamp(1.3rem, 5vw + 0.5rem, 2.5rem);
 }
 
 .fluid-h2 {
