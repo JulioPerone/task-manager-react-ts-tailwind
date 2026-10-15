@@ -5,11 +5,11 @@ const DarkLightTheme = () => {
 
     return (
         <div className="flex flex-col items-center justify-center gap-1">
-            <button onClick={toggleTheme}>
+            <button onClick={toggleTheme} className="touch-44 flex items-center justify-center rounded-3xl transition-colors">
                 {theme === "dark" ? (
-                    <span className="material-symbols-outlined text-7xl hover:bg-blue-400 p-3 rounded-3xl">dark_mode</span>
+                    <span className="material-symbols-outlined text-3xl sm:text-4xl leading-none hover:bg-blue-400 p-2 sm:p-3 rounded-3xl">dark_mode</span>
                 ) : (
-                    <span className="material-symbols-outlined text-7xl hover:bg-amber-400 p-3 rounded-3xl">light_mode</span>
+                    <span className="material-symbols-outlined text-3xl sm:text-4xl leading-none hover:bg-amber-400 p-2 sm:p-3 rounded-3xl">light_mode</span>
                 )}
             </button>
         </div>
