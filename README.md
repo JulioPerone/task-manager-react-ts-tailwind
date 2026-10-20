@@ -77,6 +77,9 @@ src/
 │   ├── TaskMenu.tsx
 │   ├── TrashButton.tsx
 │   ├── TrashDrawer.tsx # Submenú deslizante responsive
+│   ├── TutorialButton.tsx # Botón foco → /tutorial
+│   ├── tutorial/ # Sandbox aislado del tutorial
+│   │   └── TutorialSandboxProviders.tsx # Contextos en memoria (sin localStorage)
 ├── context/ # Contexto y providers
 │   ├── TasksContext.tsx
 │   ├── TasksProvider.tsx
@@ -97,12 +100,13 @@ src/
 ├── utils/ # Utilidades (persistencia y CSV)
 │   ├── csv.ts
 │   ├── storage.ts
-├── views/ # Vista principal
+├── views/ # Vistas
 │   ├── Homepage.tsx # Layout responsive
+│   ├── TutorialView.tsx # Tutorial interactivo (8 pasos, spotlight, festejos)
 ├── App.tsx
 ├── main.tsx
 ├── index.css
-├── globals.css # Fluid-type, touch 44px, animaciones DnD
+├── globals.css # Fluid-type, touch 44px, animaciones DnD, spotlight/festejo tutorial
 ```
 
 ---
