@@ -72,6 +72,7 @@ const TrashDrawer = ({
           <button
             onClick={onRestoreAll}
             disabled={total === 0}
+            data-tour="trash-restore-all"
             className="surface-skin text-white px-3 py-2 rounded disabled:opacity-50 w-full xs:w-auto text-sm sm:text-base"
           >
             Restaurar todo ({total})
@@ -83,6 +84,7 @@ const TrashDrawer = ({
               }
             }}
             disabled={total === 0}
+            data-tour="trash-empty"
             className="bg-red-600 text-white px-3 py-2 rounded disabled:opacity-50 w-full xs:w-auto text-sm sm:text-base"
           >
             Vaciar papelera
@@ -91,12 +93,13 @@ const TrashDrawer = ({
 
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6 [scrollbar-width:thin]">
           {/* Bloque 1: grupos */}
-          <section aria-label="Grupos que archivaste">
+          <section aria-label="Grupos que archivaste" data-tour="trash-groups-section">
             <div className="flex items-center justify-between mb-2">
               <h3 className="italic font-bold task-trash">Grupos que archivaste</h3>
               <button
                 onClick={onRestoreAllGroups}
                 disabled={trash.groups.length === 0}
+                data-tour="trash-restore-section"
                 className="text-sm underline disabled:opacity-50"
               >
                 Restaurar todos
@@ -122,6 +125,7 @@ const TrashDrawer = ({
                         <button
                           onClick={() => onRestoreGroup(group.id)}
                           title="Restaurar grupo"
+                          data-tour="trash-restore-item"
                           className="material-symbols-outlined p-1 rounded hover:bg-green-200"
                         >
                           restore_from_trash
@@ -133,6 +137,7 @@ const TrashDrawer = ({
                             }
                           }}
                           title="Eliminar definitivamente"
+                          data-tour="trash-purge-item"
                           className="material-symbols-outlined p-1 rounded hover:bg-red-200"
                         >
                           delete_forever
@@ -146,12 +151,13 @@ const TrashDrawer = ({
           </section>
 
           {/* Bloque 2: tareas */}
-          <section aria-label="Tareas que archivaste">
+          <section aria-label="Tareas que archivaste" data-tour="trash-tasks-section">
             <div className="flex items-center justify-between mb-2">
               <h3 className="italic font-bold task-trash">Tareas que archivaste</h3>
               <button
                 onClick={onRestoreAllTasks}
                 disabled={trash.tasks.length === 0}
+                data-tour="trash-restore-section"
                 className="text-sm underline disabled:opacity-50"
               >
                 Restaurar todas
@@ -177,6 +183,7 @@ const TrashDrawer = ({
                         <button
                           onClick={() => onRestoreTask(groupId, task.id)}
                           title="Restaurar tarea"
+                          data-tour="trash-restore-item"
                           className="material-symbols-outlined p-1 rounded hover:bg-green-200"
                         >
                           restore_from_trash
@@ -188,6 +195,7 @@ const TrashDrawer = ({
                             }
                           }}
                           title="Eliminar definitivamente"
+                          data-tour="trash-purge-item"
                           className="material-symbols-outlined p-1 rounded hover:bg-red-200"
                         >
                           delete_forever

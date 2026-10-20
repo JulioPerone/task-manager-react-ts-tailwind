@@ -45,13 +45,16 @@ npm run dev
 ---
 
 ### Click y empieza a organizar tu dia!
-https://task-manager-react-ts-tailwind.vercel.app
+👉 [Probar la App en Vercel](https://task-manager-react-ts-tailwind.vercel.app)
+
+📥 [Descargar archivo de ejemplo](https://drive.google.com/file/d/1mzH3zLME7ZF88zgIV3Pl9pwKqzSfcUOF/view?usp=sharing)
 
 ## Roadmap - v1.3.0
 - [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
 - [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
 - [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
 - [x] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
+- [x] **Tutorial interactivo:** para aprender a usar la app.
 
 ---
 

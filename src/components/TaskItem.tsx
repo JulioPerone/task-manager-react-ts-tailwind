@@ -173,6 +173,7 @@ const TaskItem = ({
                 <input
                     type="checkbox"
                     checked={task.completed}
+                    data-tour="task-toggle"
                     className="mt-0.5 shrink-0 w-4 h-4 sm:w-5 sm:h-5"
                     onChange={() =>
                         dispatchTasks({ type: "TOGGLE_TASK", payload: { groupId, taskId: task.id } })

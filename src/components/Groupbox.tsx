@@ -70,7 +70,7 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
                     </>
                 ) : (
                     <>
-                        <h3 className="font-bold text-base sm:text-lg truncate flex-1 min-w-0">{group.name}</h3>
+                        <h3 className="font-bold text-base sm:text-lg truncate flex-1 min-w-0 text-skin">{group.name}</h3>
 
                         <div ref={menuRef} className="relative shrink-0">
                             {!showMenu ? (
