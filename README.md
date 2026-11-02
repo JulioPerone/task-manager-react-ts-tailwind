@@ -69,7 +69,7 @@ src/
 │   ├── DarkLightTheme.tsx
 │   ├── DataControls.tsx
 │   ├── Footer.tsx
-│   ├── Groupbox.tsx # Grid responsive 1-2-3-4 cols
+│   ├── Groupbox.tsx # Tarjeta de grupo: menú 3-puntos, renombrar y modal de confirmación (z-50 + blur)
 │   ├── GroupManager.tsx # Grid responsive + papelera
 │   ├── Header.tsx # Fluid-type + layout responsive
 │   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades + compacto móvil
