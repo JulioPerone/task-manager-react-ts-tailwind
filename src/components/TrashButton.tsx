@@ -13,6 +13,7 @@ const TrashButton = ({ count = 0, onClick, title = "Abrir papelera" }: TrashButt
       onClick={onClick}
       title={title}
       aria-label={title}
+      data-tour="trash"
       className="relative touch-44 flex items-center justify-center material-symbols-outlined text-3xl sm:text-4xl leading-none hover:bg-red-400 p-2 sm:p-3 rounded-3xl transition-colors"
     >
       delete

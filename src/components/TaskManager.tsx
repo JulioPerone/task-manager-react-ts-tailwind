@@ -13,7 +13,7 @@ const hasOurDrag = (e: React.DragEvent) => {
 };
 
 const Placeholder = ({ label }: { label: string }) => (
-    <div className="drop-placeholder-grow rounded-2xl border-2 border-dashed border-blue-500/70 bg-blue-500/10 h-[62px] mb-2 flex items-center justify-center gap-2 text-blue-700/80 text-sm font-medium overflow-hidden">
+    <div className="drop-placeholder-grow rounded-2xl border-2 border-dashed border-blue-500/70 bg-blue-500/10 h-15.5 mb-2 flex items-center justify-center gap-2 text-blue-700/80 text-sm font-medium overflow-hidden">
         <span className="material-symbols-outlined text-base">arrow_downward</span>
         {label}
     </div>
@@ -161,6 +161,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                     <div className="flex gap-2">
                         <button
                             onClick={() => setShowInput(true)}
+                            data-tour="create-task"
                             className="surface-skin text-white px-3 py-2 rounded flex-1 hover:bg-blue-700 transition text-sm sm:text-base"
                         >
                             Crear tarea
@@ -170,6 +171,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                             type="button"
                             title="Filtrar por prioridad"
                             aria-label="Filtrar por prioridad"
+                            data-tour="filter"
                             aria-expanded={showFilter}
                             aria-pressed={priorityFilter !== null}
                             onClick={() => setShowFilter((prev) => !prev)}
@@ -189,6 +191,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                         <div
                             role="menu"
                             aria-label="Filtrar por prioridad"
+                            data-tour="filter-panel"
                             className="flex flex-wrap items-center justify-center gap-2 p-2 border rounded-xl bg-white/40 dark:bg-black/20"
                         >
                             {PRIORITY_OPTIONS.map((opt) => (
@@ -215,9 +218,9 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                     )}
 
                     {priorityFilter !== null && (
-                        <p className="text-xs opacity-70 text-center">
+                        <p className="text-xs opacity-80 text-center text-skin">
                             Mostrando {list.length} de {fullList.length} · filtro: {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}{" "}
-                            <button type="button" onClick={handleClearFilter} className="underline hover:opacity-100">
+                            <button type="button" onClick={handleClearFilter} className="underline hover:opacity-100 text-skin">
                                 limpiar
                             </button>
                         </p>
@@ -249,7 +252,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
             )}
 
             {isFiltering && (
-                <p className="text-[11px] opacity-60 text-center mt-2">
+                <p className="text-[11px] opacity-80 text-center mt-2 text-skin">
                     Filtro activo: desactívalo para reordenar por arrastre dentro del grupo.
                 </p>
             )}
@@ -280,7 +283,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                     }
                 }}
                 onDrop={(e) => handleDropOnIndex(e, overIndex ?? list.length)}
-                className="mt-4 min-h-[24px] rounded-xl p-1 transition-colors duration-200"
+                className="mt-4 min-h-6 rounded-xl p-1 transition-colors duration-200"
             >
                 {!isFiltering ? (
                     <>
@@ -300,7 +303,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                             setOverIfChanged(idx);
                                         }}
                                         onDrop={(e) => handleDropOnIndex(e, idx)}
-                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-[120px] opacity-100 scale-100"}`}
+                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-30 opacity-100 scale-100"}`}
                                     >
                                         <TaskItem
                                             task={task}
@@ -338,7 +341,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                 {showPlaceholder ? (
                                     <Placeholder label="Suelta para mover aquí" />
                                 ) : (
-                                    <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
+                                    <p className="text-center text-sm opacity-80 py-4 border border-dashed rounded-xl text-skin">
                                         Arrastra tareas aquí
                                     </p>
                                 )}
@@ -369,21 +372,21 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                         })}
 
                         {fullList.length === 0 && (
-                            <p className="text-center text-sm opacity-50 py-4 border border-dashed rounded-xl">
-                                No hay tareas todavía
-                            </p>
+                                    <p className="text-center text-sm opacity-80 py-4 border border-dashed rounded-xl text-skin">
+                                        No hay tareas todavía
+                                    </p>
                         )}
 
                         {fullList.length > 0 && list.length === 0 && priorityFilter !== null && (
                             <div className="text-center text-sm py-4 border border-dashed rounded-xl space-y-2">
-                                <p className="opacity-60">
+                                <p className="opacity-80 text-skin">
                                     No hay tareas con prioridad{" "}
                                     {PRIORITY_OPTIONS.find((o) => o.value === priorityFilter)?.label}
                                 </p>
                                 <button
                                     type="button"
                                     onClick={handleClearFilter}
-                                    className="underline font-medium hover:opacity-100"
+                                    className="underline font-medium hover:opacity-100 text-skin"
                                 >
                                     Mostrar todas
                                 </button>

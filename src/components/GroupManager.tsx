@@ -8,21 +8,48 @@ import { TrashContext } from "../context/TrashContext";
 import { loadJSON, saveJSON, STORAGE_KEYS } from "../utils/storage";
 import type { Group, GroupAction } from "../types/contracts";
 
-const GroupManager = () => {
+export type SandboxSnapshot = {
+    groupCount: number;
+    taskCount: number;
+    completedCount: number;
+    trashCount: number;
+};
+
+type GroupManagerProps = {
+    // sandbox: vista idéntica pero sin persistencia (para el tutorial).
+    // Reporta conteos para que el coachmark avance de paso.
+    sandbox?: boolean;
+    onSandboxChange?: (s: SandboxSnapshot) => void;
+};
+
+const GroupManager = ({ sandbox = false, onSandboxChange }: GroupManagerProps = {}) => {
 
     const { tasks, dispatchTasks } = useContext(TasksContext)!;
     const { trash, dispatchTrash, isTrashOpen, setTrashOpen } = useContext(TrashContext)!;
 
-    // Carga diferida desde localStorage
+    // Carga diferida desde localStorage (en sandbox se empieza vacío y no se persiste)
     const [groups, dispatchGroupsBase] = useReducer(
         useGroupsReducer,
         undefined,
-        () => loadJSON<Group[]>(STORAGE_KEYS.groups, []),
+        () => (sandbox ? [] : loadJSON<Group[]>(STORAGE_KEYS.groups, [])),
     );
 
     useEffect(() => {
+        if (sandbox) return;
         saveJSON(STORAGE_KEYS.groups, groups);
-    }, [groups]);
+    }, [groups, sandbox]);
+
+    // Reporte sandbox para el coachmark del tutorial (sin persistir nada)
+    useEffect(() => {
+        if (!sandbox || !onSandboxChange) return;
+        const list = Object.values(tasks);
+        onSandboxChange({
+            groupCount: groups.length,
+            taskCount: list.reduce((a, l) => a + l.length, 0),
+            completedCount: list.reduce((a, l) => a + l.filter((t) => t.completed).length, 0),
+            trashCount: trash.groups.length + trash.tasks.length,
+        });
+    }, [sandbox, groups, tasks, trash, onSandboxChange]);
 
     // Migración puntual: elimina tareas huérfanas de versiones sin borrado en cascada
     useEffect(() => {
@@ -159,7 +186,7 @@ const GroupManager = () => {
                 dispatchTasks={dispatchTasks}
             />
 
-            <div className="flex gap-2 mb-6">
+            <div data-tour="group-input" className="flex gap-2 mb-6">
                 <input
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
@@ -174,7 +201,7 @@ const GroupManager = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 items-start overflow-y-auto overflow-x-hidden max-h-[70vh] sm:max-h-100 pr-1 sm:pr-2 pb-4 [scrollbar-width:thin]">
+            <div data-tour="groups-list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 items-start overflow-y-auto overflow-x-hidden max-h-[70vh] sm:max-h-100 pr-1 sm:pr-2 pb-4 [scrollbar-width:thin]">
                 {groups.map((group) => (
                     <GroupBox
                         key={group.id}

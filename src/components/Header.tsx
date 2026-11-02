@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import DarkLightTheme from "./DarkLightTheme"
 import TrashButton from "./TrashButton"
+import TutorialButton from "./TutorialButton"
 import { TrashContext } from "../context/TrashContext"
 
 const Header = () => {
@@ -17,6 +18,7 @@ const Header = () => {
             <div className="absolute top-0 right-1 sm:top-1 sm:right-8 flex flex-row sm:flex-col items-center gap-1 sm:gap-2 p-1 sm:p-3">
                 <DarkLightTheme />
                 <TrashButton count={count} onClick={() => trashCtx?.setTrashOpen(true)} />
+                <TutorialButton />
             </div>
         </div>
     )

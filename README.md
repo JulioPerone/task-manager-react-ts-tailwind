@@ -45,13 +45,16 @@ npm run dev
 ---
 
 ### Click y empieza a organizar tu dia!
-https://task-manager-react-ts-tailwind.vercel.app
+👉 [Probar la App en Vercel](https://task-manager-react-ts-tailwind.vercel.app)
+
+📥 [Descargar archivo de ejemplo](https://drive.google.com/file/d/1mzH3zLME7ZF88zgIV3Pl9pwKqzSfcUOF/view?usp=sharing)
 
 ## Roadmap - v1.3.0
 - [x] **Filtro por prioridad:** filtrado independiente por grupo para visualizar únicamente las tareas con el nivel de prioridad seleccionado (`low`, `medium`, `high`, `very important`).
 - [x] **Papelera y archivados:** nueva vista / submenú con el historial de grupos y tareas eliminadas, con opción de restaurar elementos individuales o vaciado definitivo.
 - [x] **Reordenar con drag & drop:** reorganizar tareas dentro del mismo grupo y moverlas entre grupos mediante arrastre.
 - [x] **Sistema web-responsive:** para interacción fluida desde cualquier dispositivo.
+- [x] **Tutorial interactivo:** para aprender a usar la app.
 
 ---
 
@@ -66,7 +69,7 @@ src/
 │   ├── DarkLightTheme.tsx
 │   ├── DataControls.tsx
 │   ├── Footer.tsx
-│   ├── Groupbox.tsx # Grid responsive 1-2-3-4 cols
+│   ├── Groupbox.tsx # Tarjeta de grupo: menú 3-puntos, renombrar y modal de confirmación (z-50 + blur)
 │   ├── GroupManager.tsx # Grid responsive + papelera
 │   ├── Header.tsx # Fluid-type + layout responsive
 │   ├── TaskItem.tsx # Drag & drop (ghost, placeholder, drag_indicator) + prioridades + compacto móvil
@@ -74,6 +77,9 @@ src/
 │   ├── TaskMenu.tsx
 │   ├── TrashButton.tsx
 │   ├── TrashDrawer.tsx # Submenú deslizante responsive
+│   ├── TutorialButton.tsx # Botón foco → /tutorial
+│   ├── tutorial/ # Sandbox aislado del tutorial
+│   │   └── TutorialSandboxProviders.tsx # Contextos en memoria (sin localStorage)
 ├── context/ # Contexto y providers
 │   ├── TasksContext.tsx
 │   ├── TasksProvider.tsx
@@ -94,12 +100,13 @@ src/
 ├── utils/ # Utilidades (persistencia y CSV)
 │   ├── csv.ts
 │   ├── storage.ts
-├── views/ # Vista principal
+├── views/ # Vistas
 │   ├── Homepage.tsx # Layout responsive
+│   ├── TutorialView.tsx # Tutorial interactivo (8 pasos, spotlight, festejos)
 ├── App.tsx
 ├── main.tsx
 ├── index.css
-├── globals.css # Fluid-type, touch 44px, animaciones DnD
+├── globals.css # Fluid-type, touch 44px, animaciones DnD, spotlight/festejo tutorial
 ```
 
 ---

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Group, GroupAction } from "../types/contracts";
 import TaskManager from "./TaskManager";
 
@@ -15,6 +15,8 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
     const [editedName, setEditedName] = useState(group.name);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    // Id único del diálogo: varios grupos pueden tener su modal montado a la vez
+    const confirmTitleId = useId();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -25,6 +27,16 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // ESC cierra el modal de confirmación
+    useEffect(() => {
+        if (!confirmDelete) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setConfirmDelete(false);
+        };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [confirmDelete]);
 
     const handleEditName = () => {
         setIsEditing(true);
@@ -52,7 +64,7 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
     };
 
     return (
-        <div className="rounded-lg p-3 sm:p-4 relative w-full min-w-0">
+        <div className="rounded-lg p-3 sm:p-4 relative isolate w-full min-w-0">
             <div className="flex justify-between items-center gap-2 mb-3 sm:mb-4 min-w-0">
                 {isEditing ? (
                     <>
@@ -70,7 +82,7 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
                     </>
                 ) : (
                     <>
-                        <h3 className="font-bold text-base sm:text-lg truncate flex-1 min-w-0">{group.name}</h3>
+                        <h3 className="font-bold text-base sm:text-lg truncate flex-1 min-w-0 text-skin">{group.name}</h3>
 
                         <div ref={menuRef} className="relative shrink-0">
                             {!showMenu ? (
@@ -107,9 +119,20 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
             </div>
 
             {confirmDelete && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white text-black p-4 rounded shadow-lg">
-                        <p className="mb-3">¿Estás seguro de eliminar este grupo?</p>
+                <div
+                    className="absolute inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm rounded-lg p-3"
+                    onClick={handleCancelDelete}
+                    role="alertdialog"
+                    aria-modal="true"
+                    aria-labelledby={confirmTitleId}
+                >
+                    <div
+                        className="bg-white dark:bg-neutral-800 text-black dark:text-white p-4 rounded shadow-lg w-full max-w-[260px]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <p id={confirmTitleId} className="mb-3 text-center">
+                            ¿Estás seguro de eliminar este grupo?
+                        </p>
                         <div className="flex gap-4 justify-center">
                             <button
                                 onClick={handleConfirmDelete}
@@ -119,7 +142,7 @@ export const GroupBox = ({ group, groups, dispatchGroups }: GroupBoxProps) => {
                             </button>
                             <button
                                 onClick={handleCancelDelete}
-                                className="bg-gray-400 text-black px-3 py-1 rounded"
+                                className="bg-gray-400 text-black dark:text-white px-3 py-1 rounded"
                             >
                                 Cancelar
                             </button>

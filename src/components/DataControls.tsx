@@ -118,7 +118,7 @@ const DataControls = ({ groups, tasks, dispatchGroups, dispatchTasks }: Props) =
   };
 
   return (
-    <div className="flex flex-col gap-2 mb-6">
+    <div data-tour="export-import" className="flex flex-col gap-2 mb-6">
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={handleExport}
@@ -141,7 +141,7 @@ const DataControls = ({ groups, tasks, dispatchGroups, dispatchTasks }: Props) =
           className="hidden"
           onChange={handleFileChange}
         />
-        <span className="text-sm opacity-70">
+        <span className="text-sm opacity-80 text-skin">
           La plantilla se abre en Excel, LibreOffice Calc o Google Sheets.
         </span>
       </div>
