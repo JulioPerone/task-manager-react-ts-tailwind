@@ -13,7 +13,7 @@ const hasOurDrag = (e: React.DragEvent) => {
 };
 
 const Placeholder = ({ label }: { label: string }) => (
-    <div className="drop-placeholder-grow rounded-2xl border-2 border-dashed border-blue-500/70 bg-blue-500/10 h-[62px] mb-2 flex items-center justify-center gap-2 text-blue-700/80 text-sm font-medium overflow-hidden">
+    <div className="drop-placeholder-grow rounded-2xl border-2 border-dashed border-blue-500/70 bg-blue-500/10 h-15.5 mb-2 flex items-center justify-center gap-2 text-blue-700/80 text-sm font-medium overflow-hidden">
         <span className="material-symbols-outlined text-base">arrow_downward</span>
         {label}
     </div>
@@ -283,7 +283,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                     }
                 }}
                 onDrop={(e) => handleDropOnIndex(e, overIndex ?? list.length)}
-                className="mt-4 min-h-[24px] rounded-xl p-1 transition-colors duration-200"
+                className="mt-4 min-h-6 rounded-xl p-1 transition-colors duration-200"
             >
                 {!isFiltering ? (
                     <>
@@ -303,7 +303,7 @@ const TaskManager = ({ groupId, groups }: { groupId: string; groups: Group[] }) 
                                             setOverIfChanged(idx);
                                         }}
                                         onDrop={(e) => handleDropOnIndex(e, idx)}
-                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-[120px] opacity-100 scale-100"}`}
+                                        className={`task-shift overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] ${isSource ? "max-h-0 opacity-0 scale-[0.96] -mb-2" : "max-h-30 opacity-100 scale-100"}`}
                                     >
                                         <TaskItem
                                             task={task}
